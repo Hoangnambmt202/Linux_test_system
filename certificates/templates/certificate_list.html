@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Quản lý chứng chỉ</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Kỳ thi</th>
+                <th>Mã chứng chỉ</th>
+                <th>Ngày cấp</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for certificate in certificates %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ certificate.exam.title }}</td>
+                <td>{{ certificate.certificate_id }}</td>
+                <td>{{ certificate.issue_date }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="text-center">Chưa có chứng chỉ nào</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

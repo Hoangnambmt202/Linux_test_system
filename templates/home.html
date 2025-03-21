@@ -1,0 +1,123 @@
+<!-- templates/home.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Hero Section -->
+    <div class="row mb-5">
+        <div class="col-md-8 mx-auto text-center">
+            <h1 class="display-4 fw-bold">Hệ Thống Kiểm Tra Linux</h1>
+            <p class="lead text-muted">Nâng cao kỹ năng Linux của bạn thông qua các bài kiểm tra chuyên nghiệp</p>
+            <div class="mt-4">
+                {% if user.is_authenticated %}
+                    <a href="" class="btn btn-primary btn-lg px-4 me-2">Bắt đầu kiểm tra</a>
+                {% else %}
+                    <a href="" class="btn btn-primary btn-lg px-4 me-2">Đăng ký tài khoản</a>
+                    <a href="" class="btn btn-outline-secondary btn-lg px-4">Đăng nhập</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Giới thiệu -->
+    <div class="row mb-5">
+        <div class="col-md-10 mx-auto">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h2 class="card-title mb-3">Giới thiệu về hệ thống kiểm tra Linux</h2>
+                    <p class="card-text">
+                        Hệ thống kiểm tra Linux của chúng tôi cung cấp các bài kiểm tra chất lượng cao để đánh giá và nâng cao kỹ năng Linux của bạn.
+                        Từ người mới bắt đầu đến chuyên gia, chúng tôi có các bài kiểm tra phù hợp với mọi cấp độ.
+                    </p>
+                    <p class="card-text">
+                        Các tính năng chính:
+                    </p>
+                    <div class="row g-4 py-3">
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-start">
+                                <div class="bg-primary rounded-circle p-2 text-white me-3">
+                                    <i class="bi bi-check-circle"></i>
+                                </div>
+                                <div>
+                                    <h5>Đa dạng chủ đề</h5>
+                                    <p class="text-muted">Bài kiểm tra về lệnh cơ bản, quản lý hệ thống, mạng, bảo mật...</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-start">
+                                <div class="bg-primary rounded-circle p-2 text-white me-3">
+                                    <i class="bi bi-trophy"></i>
+                                </div>
+                                <div>
+                                    <h5>Chứng chỉ</h5>
+                                    <p class="text-muted">Nhận chứng chỉ sau khi hoàn thành bài kiểm tra</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-start">
+                                <div class="bg-primary rounded-circle p-2 text-white me-3">
+                                    <i class="bi bi-graph-up"></i>
+                                </div>
+                                <div>
+                                    <h5>Theo dõi tiến độ</h5>
+                                    <p class="text-muted">Xem lịch sử kiểm tra và phân tích điểm số</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bài kiểm tra nổi bật -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="text-center mb-4">Bài kiểm tra nổi bật</h2>
+        </div>
+    </div>
+    <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
+        {% for exam in featured_exams %}
+        <div class="col">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-primary">{{ exam.category }}</span>
+                        <small class="text-muted">{{ exam.duration }} phút</small>
+                    </div>
+                    <h5 class="card-title">{{ exam.title }}</h5>
+                    <p class="card-text">{{ exam.description|truncatechars:100 }}</p>
+                </div>
+                <div class="card-footer bg-transparent border-0 pt-0">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">{{ exam.questions_count }} câu hỏi</small>
+                        <a href="" class="btn btn-sm btn-outline-primary">Xem chi tiết</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center">
+            <p>Hiện tại chưa có bài kiểm tra nổi bật.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Call to Action -->
+    <div class="row">
+        <div class="col-md-8 mx-auto text-center">
+            <div class="p-5 bg-light rounded-3">
+                <h2>Sẵn sàng để thử thách?</h2>
+                <p class="lead">Đăng ký ngay hôm nay để bắt đầu hành trình nâng cao kỹ năng Linux của bạn.</p>
+               
+                    <a href="" class="btn btn-primary btn-lg mt-3">Bắt đầu kiểm tra</a>
+               
+                    <a href="" class="btn btn-primary btn-lg mt-3">Đăng ký ngay</a>
+              
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,238 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid py-5 px-4">
+    <!-- Header section with gradient background -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-lg overflow-hidden">
+                <div class="card-body p-0">
+                    <div class="bg-gradient-primary text-white p-4" style="background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h1 class="display-6 fw-bold mb-1">Quản Lý Bài Thi</h1>
+                                <p class="mb-0 opacity-75">Quản lý và tạo các bài thi mới</p>
+                            </div>
+                            <div class="col-md-6 text-md-end mt-3 mt-md-0">
+                                <a href="{% url 'add_exam' %}" class="btn btn-light btn-lg">
+                                    <i class="bi bi-plus-lg me-2"></i>Thêm Bài Thi
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats cards -->
+    {% if exams %}
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100 hover-lift" style="transition: transform 0.3s ease;">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center">
+                        <div class="rounded-circle bg-primary bg-opacity-10 p-3 me-3">
+                            <i class="bi bi-file-earmark-text text-primary" style="font-size: 1.5rem;"></i>
+                        </div>
+                        <div>
+                            <h2 class="display-5 fw-bold mb-0 text-primary">{{ exams|length }}</h2>
+                            <p class="text-muted mb-0">Tổng Bài Thi</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100 hover-lift" style="transition: transform 0.3s ease;">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center">
+                        <div class="rounded-circle bg-success bg-opacity-10 p-3 me-3">
+                            <i class="bi bi-question-circle text-success" style="font-size: 1.5rem;"></i>
+                        </div>
+                        <div>
+                            <h2 class="display-5 fw-bold mb-0 text-success">{{ total_questions }}</h2>
+                            <p class="text-muted mb-0">Tổng Câu Hỏi</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100 hover-lift" style="transition: transform 0.3s ease;">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center">
+                        <div class="rounded-circle bg-warning bg-opacity-10 p-3 me-3">
+                            <i class="bi bi-clock-history text-warning" style="font-size: 1.5rem;"></i>
+                        </div>
+                        <div>
+                            <h2 class="display-5 fw-bold mb-0 text-warning">{{ average_duration }}</h2>
+                            <p class="text-muted mb-0">Phút Trung Bình</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Main content area -->
+    <div class="card border-0 shadow-lg">
+        <div class="card-header bg-white p-4 border-0">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 fw-bold">
+                    <i class="bi bi-list-check me-2"></i>Danh Sách Bài Thi
+                </h5>
+                <div class="input-group" style="max-width: 300px;">
+                    <input type="text" class="form-control" placeholder="Tìm kiếm bài thi..." id="searchExam">
+                    <button class="btn btn-outline-secondary" type="button">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            {% if exams %}
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="text-center border-0 py-3">#</th>
+                                <th class="border-0 py-3">Tên Bài Thi</th>
+                                <th class="text-center border-0 py-3">Thời Gian</th>
+                                <th class="text-center border-0 py-3">Số Câu Hỏi</th>
+                                <th class="text-center border-0 py-3">Hành Động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for exam in exams %}
+                            <tr>
+                                <td class="text-center py-3">{{ forloop.counter }}</td>
+                                <td class="py-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-primary bg-opacity-10 p-2 rounded-circle me-3">
+                                            <i class="bi bi-file-earmark-text text-primary"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0">{{ exam.title }}</h6>
+                                            {% if exam.description %}
+                                            <div class="small text-muted">{{ exam.description|truncatechars:50 }}</div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-center py-3">
+                                    <span class="badge rounded-pill bg-info bg-opacity-10 text-info px-3 py-2">
+                                        <i class="bi bi-clock me-1"></i>{{ exam.duration }} phút
+                                    </span>
+                                </td>
+                                <td class="text-center py-3">
+                                    <span class="badge rounded-pill bg-secondary bg-opacity-10 text-secondary px-3 py-2">
+                                        <i class="bi bi-question-circle me-1"></i>{{ exam.questions.count }}
+                                    </span>
+                                </td>
+                                <td class="text-center py-3">
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-light dropdown-toggle" type="button" id="dropdownMenuButton{{ exam.id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bi bi-three-dots"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="dropdownMenuButton{{ exam.id }}">
+                                            <li>
+                                                <a class="dropdown-item" href="{% url 'edit_exam' exam.id %}">
+                                                    <i class="bi bi-pencil me-2 text-warning"></i>Sửa
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="">
+                                                    <i class="bi bi-eye me-2 text-primary"></i>Xem
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li>
+                                                <a class="dropdown-item text-danger" href="{% url 'delete_exam' exam.id %}" 
+                                                   onclick="return confirm('Bạn có chắc muốn xóa bài thi này?')">
+                                                    <i class="bi bi-trash me-2"></i>Xóa
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <div class="mb-4">
+                        <img src="{% static 'images/empty-state.svg' %}" alt="No exams" class="img-fluid" style="max-height: 200px; opacity: 0.7;">
+                    </div>
+                    <h3 class="text-muted mb-3">Chưa có bài thi nào</h3>
+                    <p class="text-muted mb-4 w-75 mx-auto">Bạn chưa tạo bài thi nào. Hãy bắt đầu tạo bài thi đầu tiên để quản lý các kỳ thi của bạn.</p>
+                    <a href="{% url 'add_exam' %}" class="btn btn-primary btn-lg px-4">
+                        <i class="bi bi-plus-circle me-2"></i>Tạo Bài Thi Đầu Tiên
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+        {% if exams %}
+        <div class="card-footer bg-white py-3 border-0">
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center mb-0">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .hover-lift:hover {
+        transform: translateY(-5px);
+    }
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+    }
+    .badge {
+        font-weight: 500;
+    }
+    .table > :not(caption) > * > * {
+        padding: 1rem 1.5rem;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchExam');
+        if (searchInput) {
+            searchInput.addEventListener('keyup', function() {
+                const filter = this.value.toLowerCase();
+                const tableRows = document.querySelectorAll('tbody tr');
+                
+                tableRows.forEach(row => {
+                    const titleCell = row.cells[1].textContent.toLowerCase();
+                    if (titleCell.includes(filter)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        }
+    });
+</script>
+{% endblock %}

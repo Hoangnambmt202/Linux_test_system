@@ -1,0 +1,10 @@
+body {
+    background-color: #f0f2f5;
+    font-family: 'Poppins', 'Segoe UI', sans-serif;
+}
+
+.main-content {
+    margin-left: 300px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+}

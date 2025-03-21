@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block extra_css %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/manage_users.css' %}">
+{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-5 fw-bold">Quản lý Người dùng</h1>
+        </div>
+    </div>
+    
+    <div class="row mb-4">
+        <div class="col">
+            <form method="GET" class="d-flex">
+                <input type="text" name="q" class="form-control me-2" placeholder="Tìm kiếm user..." value="{{ query }}">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search"></i> Tìm kiếm
+                </button>
+            </form>
+        </div>
+        <div class="col-auto">
+            <a href="" class="btn btn-success">
+                <i class="bi bi-person-plus"></i> Thêm mới
+            </a>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Tên đăng nhập</th>
+                            <th scope="col">Email</th>
+                            <th scope="col" class="text-center">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>{{ user.id }}</td>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.email }}</td>
+                            <td class="text-center">
+                                <div class="btn-group" role="group">
+                                    <a href="{% url 'edit_user' user.id %}" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-pencil"></i> Sửa
+                                    </a>
+                                    <a href="{% url 'delete_user' user.id %}" class="btn btn-sm btn-outline-danger" 
+                                       onclick="return confirm('Bạn có chắc chắn muốn xóa người dùng này?')">
+                                        <i class="bi bi-trash"></i> Xóa
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center">Không có người dùng nào</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    {% if is_paginated %}
+    <div class="row mt-4">
+        <div class="col">
+            <nav>
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1{% if query %}&q={{ query }}{% endif %}">Đầu</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}">Trước</a>
+                    </li>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ num }}</span>
+                        </li>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ num }}{% if query %}&q={{ query }}{% endif %}">{{ num }}</a>
+                        </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}">Tiếp</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if query %}&q={{ query }}{% endif %}">Cuối</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

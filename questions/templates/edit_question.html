@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-header bg-primary text-white py-3">
+                    <h2 class="card-title mb-0 fs-4">
+                        <i class="bi bi-pencil-square me-2"></i>Chỉnh Sửa Câu Hỏi
+                    </h2>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <label for="question_text" class="form-label fw-bold">Nội dung câu hỏi</label>
+                            <textarea class="form-control shadow-sm" id="question_text" name="question_text" rows="4" required>{{ question.question_text }}</textarea>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="category" class="form-label fw-bold">Danh mục</label>
+                            <select class="form-select shadow-sm" id="category" name="category" required>
+                                {% for category in categories %}
+                                    <option value="{{ category.id }}" {% if category.id == question.category.id %}selected{% endif %}>{{ category.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <div class="card h-100 border-success">
+                                    <div class="card-header bg-success bg-opacity-10 text-success">
+                                        <label for="option1" class="form-label fw-bold mb-0">Đáp án A</label>
+                                    </div>
+                                    <div class="card-body">
+                                        <input type="text" class="form-control border-0" id="option1" name="option1" value="{{ question.option1 }}" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card h-100 border-info">
+                                    <div class="card-header bg-info bg-opacity-10 text-info">
+                                        <label for="option2" class="form-label fw-bold mb-0">Đáp án B</label>
+                                    </div>
+                                    <div class="card-body">
+                                        <input type="text" class="form-control border-0" id="option2" name="option2" value="{{ question.option2 }}" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <div class="card h-100 border-warning">
+                                    <div class="card-header bg-warning bg-opacity-10 text-warning">
+                                        <label for="option3" class="form-label fw-bold mb-0">Đáp án C</label>
+                                    </div>
+                                    <div class="card-body">
+                                        <input type="text" class="form-control border-0" id="option3" name="option3" value="{{ question.option3 }}" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card h-100 border-danger">
+                                    <div class="card-header bg-danger bg-opacity-10 text-danger">
+                                        <label for="option4" class="form-label fw-bold mb-0">Đáp án D</label>
+                                    </div>
+                                    <div class="card-body">
+                                        <input type="text" class="form-control border-0" id="option4" name="option4" value="{{ question.option4 }}" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="correct_answer" class="form-label fw-bold">Đáp án đúng</label>
+                            <div class="btn-group w-100" role="group" aria-label="Correct answer selection">
+                                <input type="radio" class="btn-check" name="correct_answer" id="correct_A" value="A" {% if question.correct_answer == "A" %}checked{% endif %} required>
+                                <label class="btn btn-outline-success" for="correct_A">A</label>
+                                
+                                <input type="radio" class="btn-check" name="correct_answer" id="correct_B" value="B" {% if question.correct_answer == "B" %}checked{% endif %}>
+                                <label class="btn btn-outline-info" for="correct_B">B</label>
+                                
+                                <input type="radio" class="btn-check" name="correct_answer" id="correct_C" value="C" {% if question.correct_answer == "C" %}checked{% endif %}>
+                                <label class="btn btn-outline-warning" for="correct_C">C</label>
+                                
+                                <input type="radio" class="btn-check" name="correct_answer" id="correct_D" value="D" {% if question.correct_answer == "D" %}checked{% endif %}>
+                                <label class="btn btn-outline-danger" for="correct_D">D</label>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 mt-4">
+                            <a href="{% url 'manage_questions' %}" class="btn btn-secondary">
+                                <i class="bi bi-x-circle me-1"></i>Hủy
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save me-1"></i>Lưu Thay Đổi
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

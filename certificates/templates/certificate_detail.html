@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Chứng chỉ khóa học: {{ certificate.result.exam.title }}</h2>
+<p>Họ và Tên: {{ certificate.user.get_full_name }}</p>
+<p>Ngày cấp: {{ certificate.issue_date }}</p>
+<p>Điểm đạt được: {{ certificate.result.score }}%</p>
+
+<a href="{% url 'download_certificate' certificate.id %}">📥 Tải Chứng Chỉ</a>
+{% endblock %}

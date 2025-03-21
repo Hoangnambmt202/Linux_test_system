@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Kết quả bài thi: {{ result.exam.title }}</h2>
+<p>Điểm: {{ result.score }}%</p>
+<p>Số câu đúng: {{ result.correct_answers }}/{{ result.total_questions }}</p>
+
+<h3>Chi tiết câu trả lời:</h3>
+<ul>
+    {% for answer in answers %}
+        <li>
+            <strong>Câu hỏi:</strong> {{ answer.question.text }} <br>
+            <strong>Đáp án bạn chọn:</strong> {{ answer.selected_option }} 
+            {% if answer.is_correct %}
+                ✅ Đúng
+            {% else %}
+                ❌ Sai
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>
+{% if result.score >= 80 %}  <!-- Chỉ cấp chứng chỉ nếu đạt trên 80% -->
+    <a href="{% url 'issue_certificate' result.id %}">🎓 Nhận Chứng Chỉ</a>
+{% endif %}
+
+<a href="">Quay lại danh sách bài thi</a>
+{% endblock %}
