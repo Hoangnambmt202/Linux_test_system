@@ -56,7 +56,7 @@ def edit_exam(request, exam_id):
         exam.description = request.POST.get("description", "")
         exam.duration = request.POST["duration"]
         selected_questions = request.POST.getlist("questions")
-        
+        exam.date = request.POST["date"]
         exam.questions.set(selected_questions)
         exam.save()
         return redirect("manage_exams")
