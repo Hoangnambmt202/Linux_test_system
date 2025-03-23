@@ -34,7 +34,7 @@ def edit_question(request, question_id):
     question = get_object_or_404(Question, id=question_id)
 
     if request.method == "POST":
-        question.text = request.POST.get("text")
+        question.text = request.POST.get("question_text")
         question.option_a = request.POST.get("option_a")
         question.option_b = request.POST.get("option_b")
         question.option_c = request.POST.get("option_c")
