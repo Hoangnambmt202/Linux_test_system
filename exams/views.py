@@ -1,10 +1,12 @@
 from pyexpat.errors import messages
 from rest_framework import viewsets
 from questions.models import Question
+from results.models import Result
 from .models import Exam
 from django.contrib.auth.decorators import login_required
 from .serializers import QuestionSerializer, ExamSerializer
 from django.shortcuts import render, get_object_or_404 ,redirect
+from django.utils import timezone
 
 class QuestionViewSet(viewsets.ModelViewSet):
     queryset = Question.objects.all()
@@ -68,3 +70,19 @@ def delete_exam(request, exam_id):
     exam.delete()
     return redirect("manage_exams")
 
+@login_required
+def take_exam(request, exam_id):
+    exam = get_object_or_404(Exam, id=exam_id)
+    questions = exam.questions.all().order_by('?')  # Trộn câu hỏi
+    
+    # Kiểm tra xem user đã làm bài này chưa
+    existing_result = Result.objects.filter(user=request.user, exam=exam).exists()
+    result = Result.objects.filter(user=request.user, exam=exam).first()
+    if existing_result:
+        return render(request, "exam_already_taken.html", {"result": result})
+    
+    return render(request, "take_exam.html", {
+        "exam": exam,
+        "questions": questions,
+        "duration_minutes": exam.duration,
+    })

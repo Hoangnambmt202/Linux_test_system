@@ -28,7 +28,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+LOGIN_URL = '/login/'
 
+LOGOUT_REDIRECT_URL = '/login/'  # Sau khi đăng xuất, chuyển hướng về trang chủ
 # Application definition
 
 INSTALLED_APPS = [
@@ -44,6 +46,7 @@ INSTALLED_APPS = [
     'exams',
     'results',
     'certificates',
+    'user_panel',
   
 ]
 
@@ -140,8 +143,6 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 
 ]
-
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 

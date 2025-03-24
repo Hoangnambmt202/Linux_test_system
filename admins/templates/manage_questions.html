@@ -40,7 +40,22 @@
                         {% for question in questions %}
                         <tr>
                             <td>{{ question.id }}</td>
-                            <td>{{ question.text }}</td>
+                            <td>
+                                {% if question.text %}
+                                    <p>{{ question.text }}</p>
+                                {% endif %}
+                            
+                                {% if question.question_type == "image" %}
+                                    <img src="{{ question.media.url }}" alt="Câu hỏi hình ảnh" width="100">
+                                {% elif question.question_type == "video" %}
+                                    <video width="100" controls>
+                                        <source src="{{ question.media.url }}" type="video/mp4">
+                                        Trình duyệt của bạn không hỗ trợ video.
+                                    </video>
+                                {% endif %}
+                            </td>
+                            
+                            
                             <td>
                                 {% if question.get_difficulty_display == 'Dễ' %}
                                     <span class="badge bg-success">{{ question.get_difficulty_display }}</span>

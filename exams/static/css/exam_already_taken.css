@@ -1,0 +1,58 @@
+.completion-card {
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    padding: 0;
+    overflow: hidden;
+}
+
+.card-header {
+    background-color: #17a2b8;
+    color: white;
+    padding: 15px 20px;
+    border-bottom: none;
+}
+
+.card-body {
+    padding: 25px 20px;
+}
+
+.btn-certificate {
+    background-color: #28a745;
+    border-color: #28a745;
+    font-weight: 500;
+}
+
+.btn-result {
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+    font-weight: 500;
+}
+
+.btn {
+    padding: 8px 20px;
+    border-radius: 5px;
+    transition: all 0.3s;
+}
+
+.btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+.completion-icon {
+    font-size: 24px;
+    margin-right: 10px;
+}
+
+.button-container {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+@media (max-width: 576px) {
+    .button-container {
+        flex-direction: column;
+    }
+}

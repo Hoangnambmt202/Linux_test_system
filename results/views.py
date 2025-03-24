@@ -20,7 +20,7 @@ def submit_exam(request, exam_id):
 
         for question in questions:
             selected_option = request.POST.get(f"question_{question.id}")
-            is_correct = question.correct_option == selected_option
+            is_correct = question.correct_answer == selected_option
 
             if is_correct:
                 correct_count += 1
@@ -30,10 +30,14 @@ def submit_exam(request, exam_id):
                 result=result, question=question, selected_option=selected_option, is_correct=is_correct
             )
 
+        
         # Cập nhật điểm số
         result.correct_answers = correct_count
         result.score = (correct_count / total_questions) * 100
         result.save()
+         # Sau khi lưu kết quả
+        if result.score >= 80:  # Điều kiện cấp chứng chỉ
+            issue_certificate(request.user, exam)
 
         return redirect("view_result", result_id=result.id)
     
@@ -45,6 +49,21 @@ def view_result(request, result_id):
     result = get_object_or_404(Result, id=result_id, user=request.user)
     answers = result.answers.all()
     return render(request, "result_detail.html", {"result": result, "answers": answers})
+
+    from django.shortcuts import get_object_or_404
+from certificates.models import Certificate
+
+@login_required
+def view_result_user(request, result_id):
+    result = get_object_or_404(Result, id=result_id, user=request.user)  # Chỉ user mới xem được kết quả của mình
+    answers = result.answers.all()
+    certificate = Certificate.objects.filter(result=result).first()  # Lấy chứng chỉ nếu có
+    
+    return render(request, "result_detail_user.html", {
+        "result": result,
+        "answers": answers,
+        "certificate": certificate
+    })
 @login_required
 def manage_results(request):
     results = Result.objects.all()

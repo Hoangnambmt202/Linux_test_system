@@ -1,0 +1,13 @@
+{% extends "profile.html" %}
+{% block title %}Chứng chỉ hoàn thành{% endblock %}
+{% block page_title %}Chứng chỉ hoàn thành{% endblock %}
+
+{% block profile_content %}
+  <ul class="list-group">
+    {% for certificate in certificates %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        {{ certificate.name }} - <a href="{{ certificate.download_link }}" class="btn btn-sm btn-success">Tải xuống</a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

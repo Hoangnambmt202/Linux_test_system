@@ -1,0 +1,32 @@
+{% extends "profile.html" %}
+{% block title %}Thông tin cá nhân{% endblock  %}
+{% block page_title %}Thông tin cá nhân {% endblock %}
+{% block profile_content %}
+  <div class="list-group list-group-flush">
+    <div class="list-group-item">
+      <div class="row">
+        <div class="col-md-4 fw-bold">Tên người dùng:</div>
+        <div class="col-md-8">{{ user.username }}</div>
+      </div>
+    </div>
+    <div class="list-group-item">
+      <div class="row">
+        <div class="col-md-4 fw-bold">Tên:</div>
+        <div class="col-md-8">{{user.first_name}} {{ user.last_name}} </div>
+      </div>
+    </div>
+    <div class="list-group-item">
+      <div class="row">
+        <div class="col-md-4 fw-bold">Email:</div>
+        <div class="col-md-8">{{ user.email }}</div>
+      </div>
+    </div>
+    <div class="list-group-item">
+      <div class="row">
+        <div class="col-md-4 fw-bold">Ngày tham gia:</div>
+        <div class="col-md-8">{{ user.date_joined }}</div>
+      </div>
+    </div>
+  </div>
+  <a href="{% url "edit_profile" %}" class="btn btn-outline-primary mt-3">Chỉnh sửa thông tin</a>
+{% endblock %}

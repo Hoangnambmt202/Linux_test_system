@@ -14,12 +14,31 @@
                 <div class="card-body p-4">
                     <form method="post">
                         {% csrf_token %}
-                        
                         <div class="mb-4">
-                            <label for="question_text" class="form-label fw-bold">Nội dung câu hỏi</label>
-                            <textarea class="form-control shadow-sm" id="question_text" name="question_text" rows="4" required>{{ question.text }}</textarea>
+                            <label>Loại câu hỏi:</label>
+                        <select name="question_type" id="question_type" onchange="toggleQuestionType()">
+                            <option value="text" {% if question.question_type == "text" %}selected{% endif %}>Văn bản</option>
+                            <option value="image" {% if question.question_type == "image" %}selected{% endif %}>Hình ảnh</option>
+                            <option value="video" {% if question.question_type == "video" %}selected{% endif %}>Video</option>
+                        </select>
                         </div>
-  
+                        <div id="text_question" {% if question.question_type != "text" %}style="display:none;"{% endif %} class="mb-4">
+                            <label for="text" class="form-label fw-bold">Nội dung câu hỏi (Mô tả kèm theo nếu có):</label>
+                            <textarea class="form-control shadow-sm" id="text" name="text" rows="4" required>{{ question.text }}</textarea>
+                        </div>
+                        <div id="media_question" {% if question.question_type not in "image video" %}style="display:none;"{% endif %} class="mb-4">
+                            <label>Hình ảnh/Video hiện tại:</label><br>
+                            {% if question.question_type == "image" %}
+                                <img class="mb-4" src="{{ question.media.url }}" alt="Câu hỏi hình ảnh" width="150">
+                            {% elif question.question_type == "video" %}
+                                <video class="mb-4" width="150" controls>
+                                    <source  src="{{ question.media.url }}" type="video/mp4">
+                                </video>
+                            {% endif %}
+                            <br>
+                            <label>Chọn hình ảnh hoặc video mới:</label>
+                            <input type="file" name="media" accept="image/*,video/*">
+                        </div>
                         <div class="row g-3 mb-4">
                             <div class="col-md-6">
                                 <div class="card h-100 border-success">
@@ -105,4 +124,11 @@
         </div>
     </div>
 </div>
+<script>
+    function toggleQuestionType() {
+        let type = document.getElementById("question_type").value;
+        document.getElementById("text_question").style.display = type === "text" ? "block" : "none";
+        document.getElementById("media_question").style.display = type === "image" || type === "video" ? "block" : "none";
+    }
+    </script>
 {% endblock %}

@@ -1,0 +1,46 @@
+{% extends "base_user.html" %}
+{% block title %}Trang cá nhân{% endblock %}
+
+{% block extra_css %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container profile-container py-5">
+  <div class="row">
+    <!-- Sidebar -->
+    <div class="col-md-3">
+      <div class="list-group shadow">
+        <a href="{% url 'profile' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+          Thông tin cá nhân
+        </a>
+        <a href="{% url 'exam_history' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'exam_history' %}active{% endif %}">
+          Lịch sử bài kiểm tra
+        </a>
+        <a href="{% url 'certificates' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'certificates' %}active{% endif %}">
+          Chứng chỉ đã đạt
+        </a>
+        <a href="{% url 'support' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'support' %}active{% endif %}">
+          Hỗ trợ
+        </a>
+      </div>
+    </div>
+
+    <!-- Nội dung chính -->
+    <div class="col-md-9">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <h2 class="mb-0">{% block page_title %}{% endblock  %}</h2>
+        </div>
+        <div class="card-body">
+          {% block profile_content %}
+          <!-- Nội dung động sẽ được thay đổi -->
+          {% endblock profile_content %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

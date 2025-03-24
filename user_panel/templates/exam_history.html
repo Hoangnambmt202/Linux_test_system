@@ -1,0 +1,15 @@
+{% extends "profile.html" %}
+{% block title %}Lịch sử bài kiểm tra{% endblock %}
+{% block page_title %}Lịch sử bài kiểm tra{% endblock %}
+{% block profile_content %}
+  <ul class="list-group">
+    {% for result in results %}
+      <li class="list-group-item">
+        <a href="{% url 'view_result_user' result.id %}">
+          {{ result.exam.title }}
+        </a>
+        <span class="badge">{{ result.score }}/{{ result.total_score }}</span>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}
