@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
+from .models import SupportRequest
 from django.contrib.auth.forms import AuthenticationForm
 
 # Form Đăng ký
@@ -34,4 +35,15 @@ class UserProfileForm(forms.ModelForm):
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+class SupportForm(forms.ModelForm):
+    class Meta:
+        model = SupportRequest
+        fields = ['name', 'email', 'phone', 'message']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control'}),
+            'message': forms.Textarea(attrs={'class': 'form-control', 'rows': 5}),
         }

@@ -1,0 +1,17 @@
+{% extends "profile.html" %}
+{% block title %}Thông báo{% endblock %}
+{% block page_title %}Thông báo{% endblock %}
+{% block profile_content %}
+<div class="container py-4">
+    <h2 class="mb-4">Thông báo của bạn</h2>
+    <ul class="list-group">
+        {% for notification in notifications %}
+        <li class="list-group-item">
+            {{ notification.message }} <small class="text-muted">{{ notification.created_at|date:"d/m/Y H:i" }}</small>
+        </li>
+        {% empty %}
+        <li class="list-group-item text-center">Không có thông báo mới.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

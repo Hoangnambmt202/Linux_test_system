@@ -12,5 +12,7 @@ urlpatterns = [
     path('questions/', include('questions.urls')),
     path('results/', include('results.urls')),
     path("certificates/", include("certificates.urls")),
+    path("support-requests/", views.manage_support_requests, name="manage_support_requests"),
+    path("support-requests/resolve/<int:request_id>/", views.resolve_support_request, name="resolve_support_request"),
     
 ]

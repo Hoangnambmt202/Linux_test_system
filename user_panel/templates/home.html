@@ -6,8 +6,8 @@
     <!-- Hero Section -->
     <div class="row mb-5">
         <div class="col-md-8 mx-auto text-center">
-            <h1 class="display-4 fw-bold">Hệ Thống Kiểm Tra Linux</h1>
-            <p class="lead text-muted">Nâng cao kỹ năng Linux của bạn thông qua các bài kiểm tra chuyên nghiệp</p>
+            <h1 class="display-4 fw-bold">Hệ Thống Kiểm Tra Quản Trị Mạng Trên Môi Trường Linux</h1>
+            <p class="lead text-muted">Nâng cao kỹ năng quản trị mạng trên môi trường Linux của bạn thông qua các bài kiểm tra chuyên nghiệp</p>
             
         </div>
     </div>
@@ -19,7 +19,7 @@
                 <div class="card-body p-4">
                     <h2 class="card-title mb-3">Giới thiệu về hệ thống kiểm tra Linux</h2>
                     <p class="card-text">
-                        Hệ thống kiểm tra Linux của chúng tôi cung cấp các bài kiểm tra chất lượng cao để đánh giá và nâng cao kỹ năng Linux của bạn.
+                        Hệ thống kiểm tra quản trị mạng trên Linux của chúng tôi cung cấp các bài kiểm tra chất lượng cao để đánh giá và nâng cao kỹ năng quản trị mạng của bạn.
                         Từ người mới bắt đầu đến chuyên gia, chúng tôi có các bài kiểm tra phù hợp với mọi cấp độ.
                     </p>
                     <p class="card-text">
@@ -69,6 +69,7 @@
     <div class="row mb-4">
         <div class="col-12">
             <h2 class="text-center mb-4">Bài kiểm tra nổi bật</h2>
+            <p class="text-center mb-4 italic">Có {{exam_count}} bài kiểm tra </p>
         </div>
     </div>
     <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
@@ -85,7 +86,7 @@
                 </div>
                 <div class="card-footer bg-transparent border-0 pt-0">
                     <div class="d-flex justify-content-between align-items-center">
-                        <small class="text-muted">{{ total_questions}} câu hỏi</small>
+                        <small class="text-muted">{{ exam.total_questions }} câu hỏi</small>
                         <a href="{% url "take_exam" exam.id %}" class="btn btn-sm btn-outline-primary">Xem chi tiết</a>
                     </div>
                 </div>
@@ -99,18 +100,11 @@
     </div>
 
     <!-- Call to Action -->
-    <div class="row">
+    <div class="row mb-5">
         <div class="col-md-8 mx-auto text-center">
-            <div class="p-5 bg-light rounded-3">
-                <h2>Sẵn sàng để thử thách?</h2>
-                <p class="lead">Đăng ký ngay hôm nay để bắt đầu hành trình nâng cao kỹ năng Linux của bạn.</p>
-               
-                    <a href="" class="btn btn-primary btn-lg mt-3">Bắt đầu kiểm tra</a>
-               
-                    <a href="" class="btn btn-primary btn-lg mt-3">Đăng ký ngay</a>
-              
-            </div>
+            <h2 class="">Bắt đầu kiểm tra ngay hôm nay</h2>
+            <p class="lead text-muted">Nâng cao kỹ năng quản trị mạng trên môi trường Linux của bạn ngay hôm nay</p>
+            <a href="{% url 'exam_list' %}" class="btn btn-primary btn-lg">Xem tất cả bài kiểm tra</a>
         </div>
-    </div>
 </div>
 {% endblock %}

@@ -1,41 +1,20 @@
 {% extends "profile.html" %}
 {% block title %}Hỗ trợ{% endblock %}
-{% block page_title %}Hỗ trợ{% endblock %}
-
+{% block page_title %}Hỗ trợ{% endblock  %}
 {% block profile_content %}
 <div class="container py-5">
   <div class="row">
-    <!-- Form Section -->
-    <div class="col-lg-7 mb-4">
+    <div class="d-flex gap-2 mb-4">
       <div class="card shadow-sm">
         <div class="card-body">
           <h3 class="card-title mb-4 text-primary">Gửi yêu cầu hỗ trợ</h3>
           <form method="post">
             {% csrf_token %}
-            <div class="mb-3">
-              <label for="name" class="form-label">Họ và tên</label>
-              <input type="text" id="name" name="name" class="form-control" required>
-            </div>
-            <div class="mb-3">
-              <label for="email" class="form-label">Email</label>
-              <input type="email" id="email" name="email" class="form-control" required>
-            </div>
-            <div class="mb-3">
-              <label for="phone" class="form-label">Số điện thoại</label>
-              <input type="text" id="phone" name="phone" class="form-control" required>
-            </div>
-            <div class="mb-4">
-              <label for="message" class="form-label">Nội dung yêu cầu</label>
-              <textarea id="message" name="message" class="form-control" rows="5" required></textarea>
-            </div>
+            {{ form.as_p }}
             <button type="submit" class="btn btn-primary px-4">Gửi yêu cầu</button>
           </form>
         </div>
       </div>
-    </div>
-
-    <!-- Contact Info Section -->
-    <div class="col-lg-5">
       <div class="card shadow-sm">
         <div class="card-body">
           <h3 class="card-title mb-4 text-primary">Thông tin liên hệ</h3>

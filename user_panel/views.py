@@ -2,9 +2,12 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from exams.models import Exam
 from results.models import Result
+from .models import Notification
 from django.contrib.auth import authenticate, login, logout
-from .forms import RegisterForm, LoginForm, UserProfileForm
+from .forms import RegisterForm, LoginForm, UserProfileForm , SupportForm
 from django.contrib import messages
+from django.db.models import Count
+
 
 # Trang Đăng ký
 def register_view(request):
@@ -54,18 +57,18 @@ def edit_profile(request):
 def home(request):
     exams = Exam.objects.all()
     exam_count = exams.count()  # Đếm số lượng bài thi
-    total_questions = sum(exam.questions.count() for exam in exams)
-    return render(request, 'home.html', {'exams': exams, 'total_questions': total_questions, 'exam_count': exam_count})
+    exams = Exam.objects.annotate(total_questions=Count('questions'))  # Đếm số câu hỏi ngay trong SQL
+    return render(request, 'home.html', {'exams': exams,  'exam_count': exam_count})
    
 
 @login_required
 def profile(request):
-    return render(request, "profile_info.html", {"page_title": "Thông tin cá nhân"})
+    return render(request, "profile_info.html")
 
 @login_required
 def exam_history_view(request):
     results = Result.objects.filter(user=request.user)
-    return render(request, "exam_history.html", {"page_title": "Lịch sử bài kiểm tra", "results": results})
+    return render(request, "exam_history.html", {"results": results})
 
 @login_required
 def certificates_view(request):
@@ -73,8 +76,24 @@ def certificates_view(request):
         {"name": "Chứng chỉ Linux Basic", "download_link": "/media/certificates/linux_basic.pdf"},
         {"name": "Chứng chỉ Linux Advanced", "download_link": "/media/certificates/linux_advanced.pdf"},
     ]
-    return render(request, "certificates.html", {"page_title": "Chứng chỉ đã đạt", "certificates": certificates})
+    return render(request, "certificates.html", { "certificates": certificates})
 
 @login_required
 def support_view(request):
-    return render(request, "support.html", {"page_title": "Hỗ trợ"})
+    if request.method == "POST":
+        form = SupportForm(request.POST)
+        if form.is_valid():
+            support_request = form.save(commit=False)
+            if request.user.is_authenticated:
+                support_request.user = request.user  # Liên kết với tài khoản nếu đã đăng nhập
+            support_request.save()
+            messages.success(request, "Yêu cầu hỗ trợ của bạn đã được gửi thành công!")
+            return redirect("support")
+    else:
+        form = SupportForm()
+    return render(request, "support.html", {"form": form})
+
+@login_required
+def notifications_view(request):
+    notifications = Notification.objects.filter(user=request.user, is_read=False)
+    return render(request, "notifications.html", {"notifications": notifications})

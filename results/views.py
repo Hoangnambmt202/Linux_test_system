@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from exams.models import Exam
 from .models import Result, Answer
 from certificates.models import Certificate
-
+from certificates.views import issue_certificate
 @login_required    
 def submit_exam(request, exam_id):
     exam = get_object_or_404(Exam, id=exam_id)
@@ -17,6 +17,7 @@ def submit_exam(request, exam_id):
         result = Result.objects.create(
             user=request.user, exam=exam, score=0, total_questions=total_questions, correct_answers=0
         )
+       
 
         for question in questions:
             selected_option = request.POST.get(f"question_{question.id}")
@@ -39,7 +40,7 @@ def submit_exam(request, exam_id):
         if result.score >= 80:  # Điều kiện cấp chứng chỉ
             issue_certificate(request.user, exam)
 
-        return redirect("view_result", result_id=result.id)
+        return redirect("view_result_user", result_id=result.id)
     
     return redirect("take_exam", exam_id=exam_id)
 
@@ -50,8 +51,6 @@ def view_result(request, result_id):
     answers = result.answers.all()
     return render(request, "result_detail.html", {"result": result, "answers": answers})
 
-    from django.shortcuts import get_object_or_404
-from certificates.models import Certificate
 
 @login_required
 def view_result_user(request, result_id):
@@ -68,6 +67,3 @@ def view_result_user(request, result_id):
 def manage_results(request):
     results = Result.objects.all()
     return render(request, "result_list.html", {"results": results})
-
-def issue_certificate(user, exam):
-    Certificate.objects.create(student=user, exam=exam)

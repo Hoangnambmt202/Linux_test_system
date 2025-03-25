@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Xử lý Yêu Cầu Hỗ Trợ{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h2 class="mb-4">Xử lý Yêu Cầu Hỗ Trợ</h2>
+    
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">{{ support_request.name }} - {{ support_request.email }}</h5>
+            <p><strong>Nội dung:</strong> {{ support_request.message }}</p>
+            <p><strong>Ngày gửi:</strong> {{ support_request.created_at|date:"d/m/Y H:i" }}</p>
+
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-success">Gửi phản hồi</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

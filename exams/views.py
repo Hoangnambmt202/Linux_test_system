@@ -16,7 +16,12 @@ class ExamViewSet(viewsets.ModelViewSet):
     queryset = Exam.objects.all()
     serializer_class = ExamSerializer
 
+
 def exam_list(request):
+    exams = Exam.objects.all()
+    return render(request, 'exam_list.html', {'exams': exams})
+
+def manage_exams(request):
     exams = Exam.objects.all()
     total_duration = sum(exam.duration for exam in exams)  # Tính tổng thời gian
     exam_count = exams.count()  # Đếm số lượng bài thi
@@ -25,10 +30,13 @@ def exam_list(request):
     average_duration = total_duration / exam_count if exam_count > 0 else 0
     # Tính tổng số câu hỏi trong tất cả các bài thi
     total_questions = sum(exam.questions.count() for exam in exams)
+    # Tính tổng số câu hỏi trong một bài thi
+    total_questions_in_exam = [exam.questions.count() for exam in exams]
 
-    return render(request, 'exam_list.html', {
+    return render(request, 'manage_exams.html', {
         'exams': exams,
         'average_duration': round(average_duration, 2),  # Làm tròn 2 chữ số
+        'total_questions_in_exam': total_questions_in_exam,
         'total_questions': total_questions,
     })
 
