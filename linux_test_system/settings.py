@@ -135,13 +135,13 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
-
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")  # Thư mục tập hợp file tĩnh
 STATIC_URL = '/static/'
 
 # Chỉ định các thư mục chứa file tĩnh
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
-
+    
 ]
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -152,3 +152,7 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',  # Chỉ sử dụng JSON, tránh lỗi template
     ),
 }
+
+# settings.py
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

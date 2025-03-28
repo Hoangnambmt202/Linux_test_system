@@ -6,7 +6,7 @@ class Certificate(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     result = models.OneToOneField(Result, on_delete=models.CASCADE)  # Chứng chỉ chỉ có 1 kết quả
     issue_date = models.DateTimeField(auto_now_add=True)
-    pdf_file = models.FileField(upload_to="certificates/", blank=True, null=True)  # Lưu file PDF
+    
 
     def __str__(self):
         return f"Certificate for {self.user.username} - {self.result.exam.title}"

@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate, login, logout
 from .forms import RegisterForm, LoginForm, UserProfileForm , SupportForm
 from django.contrib import messages
 from django.db.models import Count
-
+from certificates.models import Certificate
 
 # Trang Đăng ký
 def register_view(request):
@@ -72,10 +72,7 @@ def exam_history_view(request):
 
 @login_required
 def certificates_view(request):
-    certificates = [
-        {"name": "Chứng chỉ Linux Basic", "download_link": "/media/certificates/linux_basic.pdf"},
-        {"name": "Chứng chỉ Linux Advanced", "download_link": "/media/certificates/linux_advanced.pdf"},
-    ]
+    certificates = Certificate.objects.filter(user=request.user)
     return render(request, "certificates.html", { "certificates": certificates})
 
 @login_required

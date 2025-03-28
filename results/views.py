@@ -4,6 +4,8 @@ from exams.models import Exam
 from .models import Result, Answer
 from certificates.models import Certificate
 from certificates.views import issue_certificate
+
+
 @login_required    
 def submit_exam(request, exam_id):
     exam = get_object_or_404(Exam, id=exam_id)
@@ -38,18 +40,12 @@ def submit_exam(request, exam_id):
         result.save()
          # Sau khi lưu kết quả
         if result.score >= 80:  # Điều kiện cấp chứng chỉ
-            issue_certificate(request.user, exam)
+            issue_certificate(request.user, result.id)
 
         return redirect("view_result_user", result_id=result.id)
     
     return redirect("take_exam", exam_id=exam_id)
 
-
-@login_required
-def view_result(request, result_id):
-    result = get_object_or_404(Result, id=result_id, user=request.user)
-    answers = result.answers.all()
-    return render(request, "result_detail.html", {"result": result, "answers": answers})
 
 
 @login_required

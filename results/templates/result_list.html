@@ -1,4 +1,4 @@
-{% extends "base_user.html" %}
+{% extends "base.html" %}
 {% block content %}
 <div class="container mt-4">
     <div class="card shadow-sm">
@@ -35,8 +35,8 @@
                                     </div>
                                 </div>
                             </td>
-                            <td>{{ result.correct_answers }}/{{ result.exam.total_questions }}</td>
-                            <td>{{ result.date_taken }}</td>
+                            <td>{{ result.correct_answers }}/{{ result.total_questions }}</td>
+                            <td>{{ result.created_at }}</td>
                             <td>
                                 <div class="btn-group" role="group">
                                     <a href="#" class="btn btn-sm btn-info text-white">

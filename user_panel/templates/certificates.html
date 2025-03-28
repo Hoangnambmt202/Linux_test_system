@@ -3,11 +3,37 @@
 {% block page_title %}Chứng chỉ hoàn thành{% endblock %}
 
 {% block profile_content %}
-  <ul class="list-group">
-    {% for certificate in certificates %}
-      <li class="list-group-item d-flex justify-content-between align-items-center">
-        {{ certificate.name }} - <a href="{{ certificate.download_link }}" class="btn btn-sm btn-success">Tải xuống</a>
-      </li>
-    {% endfor %}
-  </ul>
+<div class="table-responsive">
+  <table class="table table-hover">
+    <thead class="thead-light">
+      <tr>
+        <th>Tên khóa học</th>
+        <th>Ngày cấp</th>
+        <th>Điểm số</th>
+        <th>Thao tác</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for certificate in certificates %}
+        <tr>
+          <td>{{ certificate.result.exam.title }}</td>
+          <td>{{ certificate.issue_date|date:"d/m/Y" }}</td>
+          <td>{{ certificate.result.score }}%</td>
+          <td>
+            
+              <a href="{% url 'download_certificate' certificate.id %}" class="btn btn-sm btn-success">
+                <i class="fas fa-download"></i> Tải xuống
+              </a>
+           
+
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="4" class="text-center">Bạn chưa có chứng chỉ nào</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 {% endblock %}

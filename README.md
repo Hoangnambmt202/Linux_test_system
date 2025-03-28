@@ -90,6 +90,7 @@ linux_test_system/
     ```bash
     git clone <repository-url>
     cd linux_test_system
+    python manage.py migrate
     ```
 2. Cài đặt các gói phụ thuộc:
     ```bash

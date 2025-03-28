@@ -28,7 +28,7 @@
                         </div>
                         <div id="media_question" {% if question.question_type not in "image video" %}style="display:none;"{% endif %} class="mb-4">
                             <label>Hình ảnh/Video hiện tại:</label><br>
-                            {% if question.question_type == "image" %}
+                            {% if question.question_type == "image"%}
                                 <img class="mb-4" src="{{ question.media.url }}" alt="Câu hỏi hình ảnh" width="150">
                             {% elif question.question_type == "video" %}
                                 <video class="mb-4" width="150" controls>

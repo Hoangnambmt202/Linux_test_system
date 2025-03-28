@@ -3,6 +3,7 @@ from rest_framework import viewsets
 from questions.models import Question
 from results.models import Result
 from .models import Exam
+from certificates.models import Certificate
 from django.contrib.auth.decorators import login_required
 from .serializers import QuestionSerializer, ExamSerializer
 from django.shortcuts import render, get_object_or_404 ,redirect
@@ -86,8 +87,14 @@ def take_exam(request, exam_id):
     # Kiểm tra xem user đã làm bài này chưa
     existing_result = Result.objects.filter(user=request.user, exam=exam).exists()
     result = Result.objects.filter(user=request.user, exam=exam).first()
+    # answers = result.answers.all()
+    certificate = Certificate.objects.filter(result=result).first()  # Lấy chứng chỉ nếu có
     if existing_result:
-        return render(request, "exam_already_taken.html", {"result": result})
+        return render(request, "result_detail_user.html", {
+        "result": result,
+        # "answers": answers,
+        "certificate": certificate
+    })
     
     return render(request, "take_exam.html", {
         "exam": exam,
