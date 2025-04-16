@@ -12,110 +12,147 @@
                     </h2>
                 </div>
                 <div class="card-body p-4">
-                    <form method="post">
+                    <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
+                        
+                        <!-- Loại nội dung -->
                         <div class="mb-4">
-                            <label>Loại câu hỏi:</label>
-                        <select name="question_type" id="question_type" onchange="toggleQuestionType()">
-                            <option value="text" {% if question.question_type == "text" %}selected{% endif %}>Văn bản</option>
-                            <option value="image" {% if question.question_type == "image" %}selected{% endif %}>Hình ảnh</option>
-                            <option value="video" {% if question.question_type == "video" %}selected{% endif %}>Video</option>
-                        </select>
-                        </div>
-                        <div id="text_question" {% if question.question_type != "text" %}style="display:none;"{% endif %} class="mb-4">
-                            <label for="text" class="form-label fw-bold">Nội dung câu hỏi (Mô tả kèm theo nếu có):</label>
-                            <textarea class="form-control shadow-sm" id="text" name="text" rows="4" required>{{ question.text }}</textarea>
-                        </div>
-                        <div id="media_question" {% if question.question_type not in "image video" %}style="display:none;"{% endif %} class="mb-4">
-                            <label>Hình ảnh/Video hiện tại:</label><br>
-                            {% if question.question_type == "image"%}
-                                <img class="mb-4" src="{{ question.media.url }}" alt="Câu hỏi hình ảnh" width="150">
-                            {% elif question.question_type == "video" %}
-                                <video class="mb-4" width="150" controls>
-                                    <source  src="{{ question.media.url }}" type="video/mp4">
-                                </video>
-                            {% endif %}
-                            <br>
-                            <label>Chọn hình ảnh hoặc video mới:</label>
-                            <input type="file" name="media" accept="image/*,video/*">
-                        </div>
-                        <div class="row g-3 mb-4">
-                            <div class="col-md-6">
-                                <div class="card h-100 border-success">
-                                    <div class="card-header bg-success bg-opacity-10 text-success">
-                                        <label for="option_a" class="form-label fw-bold mb-0">Đáp án A</label>
-                                    </div>
-                                    <div class="card-body">
-                                        <input type="text" class="form-control border-0" id="option_a" name="option_a" value="{{ question.option_a }}" required>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="card h-100 border-info">
-                                    <div class="card-header bg-info bg-opacity-10 text-info">
-                                        <label for="option_b" class="form-label fw-bold mb-0">Đáp án B</label>
-                                    </div>
-                                    <div class="card-body">
-                                        <input type="text" class="form-control border-0" id="option_b" name="option_b" value="{{ question.option_b }}" required>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row g-3 mb-4">
-                            <div class="col-md-6">
-                                <div class="card h-100 border-warning">
-                                    <div class="card-header bg-warning bg-opacity-10 text-warning">
-                                        <label for="option_c" class="form-label fw-bold mb-0">Đáp án C</label>
-                                    </div>
-                                    <div class="card-body">
-                                        <input type="text" class="form-control border-0" id="option_c" name="option_c" value="{{ question.option_c }}" required>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="card h-100 border-danger">
-                                    <div class="card-header bg-danger bg-opacity-10 text-danger">
-                                        <label for="option_d" class="form-label fw-bold mb-0">Đáp án D</label>
-                                    </div>
-                                    <div class="card-body">
-                                        <input type="text" class="form-control border-0" id="option_d" name="option_d" value="{{ question.option_d }}" required>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mb-4">
-                            <label for="difficulty" class="form-label fw-bold">Độ khó</label>
-                            <select class="form-select shadow-sm" id="difficulty" name="difficulty" required>
-                                <option value="" selected disabled>Chọn độ khó</option>
-                                <option value="Dễ" {% if question.difficulty == "Dễ" %}selected{% endif %}>Dễ</option>
-                                <option value="Trung bình" {% if question.difficulty == "Trung bình" %}selected{% endif %}>Trung bình</option>  
-                                <option value="Khó" {% if question.difficulty == "Khó" %}selected{% endif %}>Khó</option>
+                            <label for="content_type" class="form-label fw-bold">Loại nội dung:</label>
+                            <select class="form-select" name="content_type" id="content_type" onchange="toggleContentType()">
+                                <option value="text" {% if question.content_type == "text" %}selected{% endif %}>Văn bản</option>
+                                <option value="image" {% if question.content_type == "image" %}selected{% endif %}>Hình ảnh</option>
+                                <option value="video" {% if question.content_type == "video" %}selected{% endif %}>Video</option>
                             </select>
+                        </div>
 
+                        <!-- Loại câu hỏi -->
                         <div class="mb-4">
-                            <label for="correct_answer" class="form-label fw-bold">Đáp án đúng</label>
-                            <div class="btn-group w-100" role="group" aria-label="Correct answer selection">
-                                <input type="radio" class="btn-check" name="correct_answer" id="correct_A" value="A" {% if question.correct_answer == "A" %}checked{% endif %} required>
-                                <label class="btn btn-outline-success" for="correct_A">A</label>
-                                
-                                <input type="radio" class="btn-check" name="correct_answer" id="correct_B" value="B" {% if question.correct_answer == "B" %}checked{% endif %}>
-                                <label class="btn btn-outline-info" for="correct_B">B</label>
-                                
-                                <input type="radio" class="btn-check" name="correct_answer" id="correct_C" value="C" {% if question.correct_answer == "C" %}checked{% endif %}>
-                                <label class="btn btn-outline-warning" for="correct_C">C</label>
-                                
-                                <input type="radio" class="btn-check" name="correct_answer" id="correct_D" value="D" {% if question.correct_answer == "D" %}checked{% endif %}>
-                                <label class="btn btn-outline-danger" for="correct_D">D</label>
+                            <label for="question_type" class="form-label fw-bold">Loại câu hỏi:</label>
+                            <select class="form-select" name="question_type" id="question_type" onchange="toggleQuestionType()">
+                                <option value="single" {% if question.question_type == "single" %}selected{% endif %}>Một đáp án</option>
+                                <option value="multiple" {% if question.question_type == "multiple" %}selected{% endif %}>Nhiều đáp án</option>
+                                <option value="true_false" {% if question.question_type == "true_false" %}selected{% endif %}>Đúng/Sai</option>
+                                <option value="fill_blank" {% if question.question_type == "fill_blank" %}selected{% endif %}>Điền khuyết</option>
+                            </select>
+                        </div>
+
+                        <!-- Nội dung câu hỏi -->
+                        <div id="text_question" class="mb-4">
+                            <label for="text" class="form-label fw-bold">Nội dung câu hỏi:</label>
+                            <textarea class="form-control" id="text" name="text" rows="4">{{ question.text }}</textarea>
+                        </div>
+
+                        <!-- Upload hình ảnh -->
+                        <div id="image_upload" class="mb-4" style="display: none;">
+                            <label class="form-label fw-bold">Hình ảnh:</label>
+                            {% if question.image %}
+                                <div class="mb-3">
+                                    <img src="{{ question.image.url }}" alt="Current image" class="img-fluid mb-2" style="max-height: 200px;">
+                                    <p class="text-muted small">Hình ảnh hiện tại</p>
+                                </div>
+                            {% endif %}
+                            <input type="file" class="form-control" name="image" accept="image/*">
+                            <small class="text-muted">Hỗ trợ: JPG, PNG, GIF</small>
+                        </div>
+
+                        <!-- Upload video -->
+                        <div id="video_upload" class="mb-4" style="display: none;">
+                            <label class="form-label fw-bold">Video:</label>
+                            {% if question.video %}
+                                <div class="mb-3">
+                                    <video controls class="w-100 mb-2" style="max-height: 200px;">
+                                        <source src="{{ question.video.url }}" type="video/mp4">
+                                    </video>
+                                    <p class="text-muted small">Video hiện tại</p>
+                                </div>
+                            {% endif %}
+                            <input type="file" class="form-control" name="video" accept="video/*">
+                            <small class="text-muted">Hỗ trợ: MP4, WebM</small>
+                        </div>
+
+                        <!-- Các đáp án cho câu hỏi một đáp án và nhiều đáp án -->
+                        <div id="multiple_options" class="mb-4" style="display: none;">
+                            <div class="row g-3">
+                                {% for key, value in options.items %}
+                                <div class="col-md-6">
+                                    <div class="card h-100">
+                                        <div class="card-header">
+                                            <label for="option_{{ key|lower }}" class="form-label fw-bold mb-0">Đáp án {{ key }}</label>
+                                        </div>
+                                        <div class="card-body">
+                                            <input type="text" class="form-control" id="option_{{ key|lower }}" 
+                                                   name="option_{{ key|lower }}" value="{{ value }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
                             </div>
                         </div>
 
-                        <div class="d-flex justify-content-end gap-2 mt-4">
+                        <!-- Đáp án đúng cho câu hỏi một đáp án -->
+                        <div id="single_answer" class="mb-4" style="display: none;">
+                            <label class="form-label fw-bold">Đáp án đúng:</label>
+                            <div class="btn-group w-100" role="group">
+                                {% for key in "ABCD" %}
+                                <input type="radio" class="btn-check" name="correct_answer" 
+                                       id="correct_{{ key }}" value="{{ key }}"
+                                       {% if question.correct_answer == key %}checked{% endif %}>
+                                <label class="btn btn-outline-primary" for="correct_{{ key }}">{{ key }}</label>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Đáp án đúng cho câu hỏi nhiều đáp án -->
+                        <div id="multiple_answer" class="mb-4" style="display: none;">
+                            <label class="form-label fw-bold">Các đáp án đúng:</label>
+                            <div class="btn-group w-100" role="group">
+                                {% for key in "ABCD" %}
+                                <input type="checkbox" class="btn-check" name="correct_answers" 
+                                       id="correct_multi_{{ key }}" value="{{ key }}"
+                                       {% if key in correct_answers %}checked{% endif %}>
+                                <label class="btn btn-outline-primary" for="correct_multi_{{ key }}">{{ key }}</label>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Đáp án cho câu hỏi đúng/sai -->
+                        <div id="true_false_answer" class="mb-4" style="display: none;">
+                            <label class="form-label fw-bold">Đáp án đúng:</label>
+                            <div class="btn-group w-100" role="group">
+                                <input type="radio" class="btn-check" name="correct_answer" id="btnTrue" 
+                                       value="true" {% if question.correct_answer == "true" %}checked{% endif %}>
+                                <label class="btn btn-outline-success" for="btnTrue">Đúng</label>
+                                
+                                <input type="radio" class="btn-check" name="correct_answer" id="btnFalse" 
+                                       value="false" {% if question.correct_answer == "false" %}checked{% endif %}>
+                                <label class="btn btn-outline-danger" for="btnFalse">Sai</label>
+                            </div>
+                        </div>
+
+                        <!-- Đáp án cho câu hỏi điền khuyết -->
+                        <div id="fill_blank_answer" class="mb-4" style="display: none;">
+                            <label for="fillBlankAnswer" class="form-label fw-bold">Đáp án đúng:</label>
+                            <input type="text" class="form-control" id="fillBlankAnswer" 
+                                   name="correct_answer" value="{{ question.correct_answer }}"
+                                   placeholder="Nhập đáp án chính xác">
+                        </div>
+
+                        <!-- Độ khó -->
+                        <div class="mb-4">
+                            <label for="difficulty" class="form-label fw-bold">Độ khó:</label>
+                            <select class="form-select" id="difficulty" name="difficulty" required>
+                                <option value="easy" {% if question.difficulty == "easy" %}selected{% endif %}>Dễ</option>
+                                <option value="medium" {% if question.difficulty == "medium" %}selected{% endif %}>Trung bình</option>
+                                <option value="hard" {% if question.difficulty == "hard" %}selected{% endif %}>Khó</option>
+                            </select>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
                             <a href="{% url 'manage_questions' %}" class="btn btn-secondary">
-                                <i class="bi bi-x-circle me-1"></i>Hủy
+                                <i class="bi bi-arrow-left"></i> Quay lại
                             </a>
                             <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-save me-1"></i>Lưu Thay Đổi
+                                <i class="bi bi-save"></i> Lưu Thay Đổi
                             </button>
                         </div>
                     </form>
@@ -124,11 +161,55 @@
         </div>
     </div>
 </div>
+
 <script>
-    function toggleQuestionType() {
-        let type = document.getElementById("question_type").value;
-        document.getElementById("text_question").style.display = type === "text" ? "block" : "none";
-        document.getElementById("media_question").style.display = type === "image" || type === "video" ? "block" : "none";
+function toggleContentType() {
+    const type = document.getElementById("content_type").value;
+    const imageUpload = document.getElementById("image_upload");
+    const videoUpload = document.getElementById("video_upload");
+    
+    imageUpload.style.display = type === "image" ? "block" : "none";
+    videoUpload.style.display = type === "video" ? "block" : "none";
+}
+
+function toggleQuestionType() {
+    const type = document.getElementById("question_type").value;
+    const multipleOptions = document.getElementById("multiple_options");
+    const singleAnswer = document.getElementById("single_answer");
+    const multipleAnswer = document.getElementById("multiple_answer");
+    const trueFalseAnswer = document.getElementById("true_false_answer");
+    const fillBlankAnswer = document.getElementById("fill_blank_answer");
+    
+    // Ẩn tất cả
+    multipleOptions.style.display = "none";
+    singleAnswer.style.display = "none";
+    multipleAnswer.style.display = "none";
+    trueFalseAnswer.style.display = "none";
+    fillBlankAnswer.style.display = "none";
+    
+    // Hiển thị theo loại câu hỏi
+    switch(type) {
+        case "single":
+            multipleOptions.style.display = "block";
+            singleAnswer.style.display = "block";
+            break;
+        case "multiple":
+            multipleOptions.style.display = "block";
+            multipleAnswer.style.display = "block";
+            break;
+        case "true_false":
+            trueFalseAnswer.style.display = "block";
+            break;
+        case "fill_blank":
+            fillBlankAnswer.style.display = "block";
+            break;
     }
-    </script>
+}
+
+// Khởi tạo khi tải trang
+document.addEventListener('DOMContentLoaded', function() {
+    toggleContentType();
+    toggleQuestionType();
+});
+</script>
 {% endblock %}

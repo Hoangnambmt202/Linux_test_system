@@ -8,6 +8,7 @@
             <tr>
                 <th>#</th>
                 <th>Kỳ thi</th>
+                <th>Người dự thi</th>
                 <th>Mã chứng chỉ</th>
                 <th>Ngày cấp</th>
             </tr>
@@ -16,7 +17,8 @@
             {% for certificate in certificates %}
             <tr>
                 <td>{{ forloop.counter }}</td>
-                <td>{{ certificate.exam.title }}</td>
+                <td>{{ certificate.result.exam.title }}</td>
+                <td>{{ certificate.user.get_full_name }}</td>
                 <td>{{ certificate.id }}</td>
                 <td>{{ certificate.issue_date }}</td>
             </tr>

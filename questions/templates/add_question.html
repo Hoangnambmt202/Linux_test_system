@@ -11,65 +11,126 @@
           <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             
+            <!-- Loại nội dung -->
             <div class="mb-3">
-              <label for="question_type" class="form-label fw-bold">Loại câu hỏi:</label>
-              <select class="form-select" name="question_type" id="question_type" onchange="toggleQuestionType()">
+              <label for="content_type" class="form-label fw-bold">Loại nội dung:</label>
+              <select class="form-select" name="content_type" id="content_type" onchange="toggleContentType()">
                 <option value="text">Văn bản</option>
                 <option value="image">Hình ảnh</option>
                 <option value="video">Video</option>
               </select>
             </div>
 
+            <!-- Loại câu hỏi -->
+            <div class="mb-3">
+              <label for="question_type" class="form-label fw-bold">Loại câu hỏi:</label>
+              <select class="form-select" name="question_type" id="question_type" onchange="toggleQuestionType()">
+                <option value="single">Một đáp án</option>
+                <option value="multiple">Nhiều đáp án</option>
+                <option value="true_false">Đúng/Sai</option>
+                <option value="fill_blank">Điền khuyết</option>
+              </select>
+            </div>
+
+            <!-- Nội dung câu hỏi -->
             <div id="text_question" class="mb-3">
               <label for="questionText" class="form-label fw-bold">Nội dung câu hỏi:</label>
               <textarea class="form-control" id="questionText" name="text" rows="3"></textarea>
             </div>
 
-            <div id="media_question" class="mb-3" style="display: none">
-              <label for="mediaFile" class="form-label fw-bold">Chọn hình ảnh hoặc video:</label>
-              <input class="form-control" type="file" id="mediaFile" name="media" accept="image/*,video/*" />
+            <!-- Upload hình ảnh -->
+            <div id="image_upload" class="mb-3" style="display: none">
+              <label for="imageFile" class="form-label fw-bold">Chọn hình ảnh:</label>
+              <input class="form-control" type="file" id="imageFile" name="image" accept="image/*" />
+              <small class="text-muted">Hỗ trợ các định dạng: JPG, PNG, GIF</small>
             </div>
 
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <label for="optionA" class="form-label fw-bold">Đáp án A:</label>
-                <input type="text" class="form-control" id="optionA" name="option_a" required />
+            <!-- Upload video -->
+            <div id="video_upload" class="mb-3" style="display: none">
+              <label for="videoFile" class="form-label fw-bold">Chọn video:</label>
+              <input class="form-control" type="file" id="videoFile" name="video" accept="video/*" />
+              <small class="text-muted">Hỗ trợ các định dạng: MP4, WebM</small>
+            </div>
+
+            <!-- Các đáp án cho câu hỏi một đáp án và nhiều đáp án -->
+            <div id="multiple_options" class="mb-3">
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="optionA" class="form-label fw-bold">Đáp án A:</label>
+                  <input type="text" class="form-control" id="optionA" name="option_a" />
+                </div>
+                <div class="col-md-6">
+                  <label for="optionB" class="form-label fw-bold">Đáp án B:</label>
+                  <input type="text" class="form-control" id="optionB" name="option_b" />
+                </div>
               </div>
-              <div class="col-md-6">
-                <label for="optionB" class="form-label fw-bold">Đáp án B:</label>
-                <input type="text" class="form-control" id="optionB" name="option_b" required />
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="optionC" class="form-label fw-bold">Đáp án C:</label>
+                  <input type="text" class="form-control" id="optionC" name="option_c" />
+                </div>
+                <div class="col-md-6">
+                  <label for="optionD" class="form-label fw-bold">Đáp án D:</label>
+                  <input type="text" class="form-control" id="optionD" name="option_d" />
+                </div>
               </div>
             </div>
 
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <label for="optionC" class="form-label fw-bold">Đáp án C:</label>
-                <input type="text" class="form-control" id="optionC" name="option_c" required />
-              </div>
-              <div class="col-md-6">
-                <label for="optionD" class="form-label fw-bold">Đáp án D:</label>
-                <input type="text" class="form-control" id="optionD" name="option_d" required />
+            <!-- Đáp án đúng cho câu hỏi một đáp án -->
+            <div id="single_answer" class="mb-3">
+              <label class="form-label fw-bold">Đáp án đúng:</label>
+              <div class="btn-group w-100" role="group">
+                <input type="radio" class="btn-check" name="correct_answer" id="btnA" value="A">
+                <label class="btn btn-outline-primary" for="btnA">A</label>
+                <input type="radio" class="btn-check" name="correct_answer" id="btnB" value="B">
+                <label class="btn btn-outline-primary" for="btnB">B</label>
+                <input type="radio" class="btn-check" name="correct_answer" id="btnC" value="C">
+                <label class="btn btn-outline-primary" for="btnC">C</label>
+                <input type="radio" class="btn-check" name="correct_answer" id="btnD" value="D">
+                <label class="btn btn-outline-primary" for="btnD">D</label>
               </div>
             </div>
 
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <label for="correctAnswer" class="form-label fw-bold">Đáp án đúng:</label>
-                <select class="form-select" id="correctAnswer" name="correct_answer">
-                  <option value="A">A</option>
-                  <option value="B">B</option>
-                  <option value="C">C</option>
-                  <option value="D">D</option>
-                </select>
+            <!-- Đáp án đúng cho câu hỏi nhiều đáp án -->
+            <div id="multiple_answer" class="mb-3" style="display: none">
+              <label class="form-label fw-bold">Các đáp án đúng:</label>
+              <div class="btn-group w-100" role="group">
+                <input type="checkbox" class="btn-check" name="correct_answers" id="btnMultiA" value="A">
+                <label class="btn btn-outline-primary" for="btnMultiA">A</label>
+                <input type="checkbox" class="btn-check" name="correct_answers" id="btnMultiB" value="B">
+                <label class="btn btn-outline-primary" for="btnMultiB">B</label>
+                <input type="checkbox" class="btn-check" name="correct_answers" id="btnMultiC" value="C">
+                <label class="btn btn-outline-primary" for="btnMultiC">C</label>
+                <input type="checkbox" class="btn-check" name="correct_answers" id="btnMultiD" value="D">
+                <label class="btn btn-outline-primary" for="btnMultiD">D</label>
               </div>
-              <div class="col-md-6">
-                <label for="difficulty" class="form-label fw-bold">Độ khó:</label>
-                <select class="form-select" id="difficulty" name="difficulty">
-                  <option value="easy">Dễ</option>
-                  <option value="medium">Trung Bình</option>
-                  <option value="hard">Khó</option>
-                </select>
+            </div>
+
+            <!-- Đáp án cho câu hỏi đúng/sai -->
+            <div id="true_false_answer" class="mb-3" style="display: none">
+              <label class="form-label fw-bold">Đáp án đúng:</label>
+              <div class="btn-group w-100" role="group">
+                <input type="radio" class="btn-check" name="correct_answer" id="btnTrue" value="true">
+                <label class="btn btn-outline-success" for="btnTrue">Đúng</label>
+                <input type="radio" class="btn-check" name="correct_answer" id="btnFalse" value="false">
+                <label class="btn btn-outline-danger" for="btnFalse">Sai</label>
               </div>
+            </div>
+
+            <!-- Đáp án cho câu hỏi điền khuyết -->
+            <div id="fill_blank_answer" class="mb-3" style="display: none">
+              <label for="fillBlankAnswer" class="form-label fw-bold">Đáp án đúng:</label>
+              <input type="text" class="form-control" id="fillBlankAnswer" name="correct_answer" placeholder="Nhập đáp án chính xác">
+            </div>
+
+            <!-- Độ khó -->
+            <div class="mb-3">
+              <label for="difficulty" class="form-label fw-bold">Độ khó:</label>
+              <select class="form-select" id="difficulty" name="difficulty" required>
+                <option value="easy">Dễ</option>
+                <option value="medium">Trung bình</option>
+                <option value="hard">Khó</option>
+              </select>
             </div>
 
             <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
@@ -88,9 +149,55 @@
 </div>
 
 <script>
-    function toggleQuestionType() {
-        let type = document.getElementById("question_type").value;
-        document.getElementById("media_question").style.display = type === "image" || type === "video" ? "block" : "none";
+function toggleContentType() {
+    const type = document.getElementById("content_type").value;
+    const textQuestion = document.getElementById("text_question");
+    const imageUpload = document.getElementById("image_upload");
+    const videoUpload = document.getElementById("video_upload");
+    
+    textQuestion.style.display = "block"; // Luôn hiển thị phần text
+    imageUpload.style.display = type === "image" ? "block" : "none";
+    videoUpload.style.display = type === "video" ? "block" : "none";
+}
+
+function toggleQuestionType() {
+    const type = document.getElementById("question_type").value;
+    const multipleOptions = document.getElementById("multiple_options");
+    const singleAnswer = document.getElementById("single_answer");
+    const multipleAnswer = document.getElementById("multiple_answer");
+    const trueFalseAnswer = document.getElementById("true_false_answer");
+    const fillBlankAnswer = document.getElementById("fill_blank_answer");
+    
+    // Ẩn tất cả các phần đáp án
+    multipleOptions.style.display = "none";
+    singleAnswer.style.display = "none";
+    multipleAnswer.style.display = "none";
+    trueFalseAnswer.style.display = "none";
+    fillBlankAnswer.style.display = "none";
+    
+    // Hiển thị phần tương ứng với loại câu hỏi
+    switch(type) {
+        case "single":
+            multipleOptions.style.display = "block";
+            singleAnswer.style.display = "block";
+            break;
+        case "multiple":
+            multipleOptions.style.display = "block";
+            multipleAnswer.style.display = "block";
+            break;
+        case "true_false":
+            trueFalseAnswer.style.display = "block";
+            break;
+        case "fill_blank":
+            fillBlankAnswer.style.display = "block";
+            break;
     }
+}
+
+// Gọi các hàm khi trang được tải
+document.addEventListener('DOMContentLoaded', function() {
+    toggleContentType();
+    toggleQuestionType();
+});
 </script>
 {% endblock %}

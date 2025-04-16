@@ -9,6 +9,10 @@ from django.shortcuts import render
 from django.contrib.auth.models import User
 from user_panel.models import SupportRequest, Notification
 from .forms import SupportResponseForm
+from exams.models import Exam
+from certificates.models import Result
+
+
 
 
 @csrf_protect
@@ -31,11 +35,15 @@ def admin_login(request):
 def admin_dashboard(request):
     if not request.user.is_staff:  # Chỉ cho phép admin truy cập
         return redirect("admin_login")
-
+    total_exams = Exam.objects.count()
+    total_users = User.objects.count()
+    total_certificates = Result.objects.count()
     context = {
-        "total_exams": 10,  # Thống kê giả định
-        "total_users": 200,
-        "total_certificates": 50,
+        "total_exams": total_exams,
+        "total_users": total_users,
+        "total_certificates": total_certificates,   
+        
+ 
     }
     return render(request, "dashboard.html", context)
 

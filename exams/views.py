@@ -87,12 +87,12 @@ def take_exam(request, exam_id):
     # Kiểm tra xem user đã làm bài này chưa
     existing_result = Result.objects.filter(user=request.user, exam=exam).exists()
     result = Result.objects.filter(user=request.user, exam=exam).first()
-    # answers = result.answers.all()
     certificate = Certificate.objects.filter(result=result).first()  # Lấy chứng chỉ nếu có
     if existing_result:
+        answers = result.answers.all()
         return render(request, "result_detail_user.html", {
         "result": result,
-        # "answers": answers,
+        "answers": answers,
         "certificate": certificate
     })
     

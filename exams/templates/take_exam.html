@@ -6,7 +6,23 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/take_exam.css' %}">
-
+<style>
+    .question-media {
+        margin: 20px 0;
+        text-align: center;
+    }
+    .question-media img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .question-media video {
+        max-width: 100%;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+</style>
 {% endblock %} 
 
 {% block content %}
@@ -31,17 +47,16 @@
                 <div class="question-box {% if not forloop.last %}border-bottom{% endif %}">
                     <h3 class="fw-bold">Câu {{ forloop.counter }}: {{ question.text }}</h3>
                     
-                    {% if question.media %}
-                        <div class="media">
-                            {% if question.question_type == "image" %}
-                                <img src="{{ question.media.url }}" alt="Hình câu hỏi" class="img-fluid">
-                            {% elif question.question_type == "video" %}
-                                <video controls class="w-100">
-                                    <source src="{{ question.media.url }}">
-                                </video>
-                            {% endif %}
-                        </div>
-                    {% endif %}
+                    <div class="question-media">
+                        {% if question.question_type == "image" and question.image %}
+                            <img src="{{ question.image.url }}" alt="Hình câu hỏi" class="img-fluid">
+                        {% elif question.question_type == "video" and question.video %}
+                            <video controls class="w-100">
+                                <source src="{{ question.video.url }}" type="video/mp4">
+                                Trình duyệt của bạn không hỗ trợ video.
+                            </video>
+                        {% endif %}
+                    </div>
                     
                     <div class="options">
                         <label class="form-check">
