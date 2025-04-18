@@ -1,16 +1,15 @@
-from django.db import models
+from django.db import models, transaction
 from django.core.validators import FileExtensionValidator
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 
 class Question(models.Model):
-    # Loại nội dung câu hỏi
     CONTENT_TYPES = [
         ('text', 'Text Only'),
         ('image', 'Image'),
         ('video', 'Video'),
     ]
 
-    # Loại câu hỏi
     QUESTION_TYPES = [
         ('single', 'Single Answer'),
         ('multiple', 'Multiple Answers'),
@@ -18,20 +17,17 @@ class Question(models.Model):
         ('fill_blank', 'Fill in the Blank'),
     ]
 
-    # Độ khó
     DIFFICULTY_LEVELS = [
         ('easy', 'Easy'),
         ('medium', 'Medium'),
         ('hard', 'Hard'),
     ]
 
-    # Thông tin cơ bản
     text = models.TextField(verbose_name='Question Text', null=True, blank=True, default='')
     content_type = models.CharField(max_length=10, choices=CONTENT_TYPES, default='text')
     question_type = models.CharField(max_length=20, choices=QUESTION_TYPES)
     difficulty = models.CharField(max_length=10, choices=DIFFICULTY_LEVELS, default='medium')
 
-    # Media fields
     image = models.ImageField(
         upload_to='question_images/',
         null=True,
@@ -45,11 +41,10 @@ class Question(models.Model):
         validators=[FileExtensionValidator(['mp4', 'webm', 'ogg'])]
     )
 
-    # Các đáp án - sử dụng TextField thay vì JSONField cho MySQL
-    options = models.TextField(null=True, blank=True, help_text='JSON string containing answer options')
-    correct_answer = models.TextField(help_text='Correct answer(s) - JSON string for multiple choice')
+    # Câu trả lời cho True/False hoặc Fill-in-the-blank
+    correct_answer_text = models.TextField(null=True, blank=True)
+    correct_answers = models.ManyToManyField('Option', blank=True, related_name='correct_for_questions')
 
-    # Thời gian tạo và cập nhật
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -59,69 +54,53 @@ class Question(models.Model):
     def __str__(self):
         return f"{self.get_question_type_display()} - {self.text[:50]}..."
 
-    def get_correct_answers(self):
-        """Trả về danh sách các đáp án đúng dựa vào loại câu hỏi"""
-        import json
-        if self.question_type == 'multiple':
-            try:
-                return json.loads(self.correct_answer)
-            except json.JSONDecodeError:
-                return []
-        return self.correct_answer
-
-    def check_answer(self, user_answer):
-        """Kiểm tra câu trả lời của người dùng"""
-        import json
-        if self.question_type == 'multiple':
-            try:
-                correct_answers = set(json.loads(self.correct_answer))
-                user_answers = set(json.loads(user_answer) if isinstance(user_answer, str) else user_answer)
-                return correct_answers == user_answers
-            except json.JSONDecodeError:
-                return False
-        elif self.question_type == 'true_false':
-            return str(user_answer).lower() == self.correct_answer.lower()
-        elif self.question_type == 'fill_blank':
-            return user_answer.strip().lower() == self.correct_answer.strip().lower()
-        else:  # single choice
-            return user_answer == self.correct_answer
+    @transaction.atomic
+    def save(self, *args, **kwargs):
+     
+        is_new = self.pk is None
+        super().save(*args, **kwargs)
+        
+        # M2M relationships need to be handled after save
+        if not is_new and hasattr(self, '_clear_correct_answers'):
+            self.correct_answers.clear()
+            delattr(self, '_clear_correct_answers')
 
     def clean(self):
-        from django.core.exceptions import ValidationError
-        import json
-        
-        # Validate content type and associated files
         if self.content_type == 'image' and not self.image:
-            raise ValidationError('Image file is required for image questions')
+            raise ValidationError('Phải có hình ảnh cho câu hỏi dạng hình ảnh.')
         if self.content_type == 'video' and not self.video:
-            raise ValidationError('Video file is required for video questions')
-            
-        # Validate options and correct answers based on question type
+            raise ValidationError('Phải có video cho câu hỏi dạng video.')
+
+        if self.question_type == 'true_false':
+            if self.correct_answer_text not in ['true', 'false']:
+                raise ValidationError('Đáp án đúng cho câu hỏi đúng/sai phải là "true" hoặc "false".')
+
+        if self.question_type == 'fill_blank':
+            if not self.correct_answer_text:
+                raise ValidationError('Phải cung cấp đáp án đúng cho câu hỏi điền khuyết.')
+
         if self.question_type in ['single', 'multiple']:
-            if not self.options:
-                raise ValidationError('Options are required for single/multiple choice questions')
-            try:
-                options_dict = json.loads(self.options) if isinstance(self.options, str) else self.options
-                if not all(key in options_dict for key in ['A', 'B', 'C', 'D']):
-                    raise ValidationError('Options must contain choices A, B, C, and D')
-            except json.JSONDecodeError:
-                raise ValidationError('Invalid options format')
-                
-            if self.question_type == 'multiple':
-                try:
-                    correct_answers = json.loads(self.correct_answer)
-                    if not isinstance(correct_answers, list):
-                        raise ValidationError('Correct answers must be a JSON array for multiple choice questions')
-                    if not all(ans in ['A', 'B', 'C', 'D'] for ans in correct_answers):
-                        raise ValidationError('Invalid correct answers')
-                except json.JSONDecodeError:
-                    raise ValidationError('Invalid correct answers format')
-            else:  # single choice
-                if self.correct_answer not in ['A', 'B', 'C', 'D']:
-                    raise ValidationError('Correct answer must be A, B, C, or D for single choice questions')
-                    
-        elif self.question_type == 'true_false':
-            if self.correct_answer not in ['true', 'false']:
-                raise ValidationError('Correct answer must be true or false')
-                
-        # For fill_blank, any non-empty correct_answer is valid
+            if not self.pk:
+                return  # Chỉ kiểm tra khi đã lưu và có ID
+
+            if self.options.count() != 4:
+                raise ValidationError('Câu hỏi phải có đủ 4 đáp án A, B, C, D.')
+
+            if self.question_type == 'single' and self.correct_answers.count() != 1:
+                raise ValidationError('Câu hỏi một đáp án phải có đúng 1 đáp án đúng.')
+
+            if self.question_type == 'multiple' and self.correct_answers.count() < 1:
+                raise ValidationError('Câu hỏi nhiều đáp án phải có ít nhất 1 đáp án đúng.')
+
+class Option(models.Model):
+    question = models.ForeignKey(Question, related_name='options', on_delete=models.CASCADE)
+    key = models.CharField(max_length=1, choices=[('A', 'A'), ('B', 'B'), ('C', 'C'), ('D', 'D')])
+    text = models.TextField()
+
+    class Meta:
+        unique_together = ('question', 'key')
+
+    def __str__(self):
+        return f"{self.key}: {self.text[:50]}..."
+
+    

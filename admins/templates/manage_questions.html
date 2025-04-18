@@ -136,6 +136,9 @@
                             </td>
                             <td class="text-center">
                                 <div class="btn-group" role="group">
+                                    <a href="{% url 'question_detail' question.id %}" class="btn btn-sm btn-outline-info">
+                                        <i class="bi bi-info-circle"></i> Chi tiết
+                                    </a>
                                     <a href="{% url 'edit_question' question.id %}" class="btn btn-sm btn-outline-primary">
                                         <i class="bi bi-pencil"></i> Sửa
                                     </a>

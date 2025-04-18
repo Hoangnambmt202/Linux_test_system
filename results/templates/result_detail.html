@@ -1,26 +1,166 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>Kết quả bài thi: {{ result.exam.title }}</h2>
-<p>Điểm: {{ result.score }}%</p>
-<p>Số câu đúng: {{ result.correct_answers }}/{{ result.total_questions }}</p>
-
-<h3>Chi tiết câu trả lời:</h3>
-<ul>
-    {% for answer in answers %}
-        <li>
-            <strong>Câu hỏi:</strong> {{ answer.question.text }} <br>
-            <strong>Đáp án bạn chọn:</strong> {{ answer.selected_option }} 
-            {% if answer.is_correct %}
-                ✅ Đúng
-            {% else %}
-                ❌ Sai
-            {% endif %}
-        </li>
-    {% endfor %}
-</ul>
-{% if result.score >= 80 %}  <!-- Chỉ cấp chứng chỉ nếu đạt trên 80% -->
-    <a href="{% url 'issue_certificate' result.id %}">🎓 Nhận Chứng Chỉ</a>
-{% endif %}
-
-<a href="{% url "home" %}">Quay lại danh sách bài thi</a>
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="h4 mb-0">Kết quả bài thi: {{ result.exam.title }}</h2>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card h-100 border-success">
+                                <div class="card-body text-center">
+                                    <h3 class="display-4">{{ result.score|floatformat:1 }}%</h3>
+                                    <p class="mb-0">Điểm số</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card h-100 border-info">
+                                <div class="card-body text-center">
+                                    <h3 class="display-4">{{ result.correct_answers }}/{{ result.total_questions }}</h3>
+                                    <p class="mb-0">Số câu đúng</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h3 class="mb-3">Chi tiết câu trả lời</h3>
+                    {% for answer in answers %}
+                    <div class="card mb-3 {% if answer.is_correct %}border-success{% else %}border-danger{% endif %}">
+                        <div class="card-header {% if answer.is_correct %}bg-success bg-opacity-10{% else %}bg-danger bg-opacity-10{% endif %}">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Câu {{ forloop.counter }}</h5>
+                                {% if answer.is_correct %}
+                                    <span class="badge bg-success">Đúng</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Sai</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-3">{{ answer.question.text }}</p>
+                            
+                            {% if answer.question.content_type == "image" and answer.question.image %}
+                                <div class="mb-3 text-center">
+                                    <img src="{{ answer.question.image.url }}" alt="Hình câu hỏi" class="img-fluid" style="max-height: 200px;">
+                                </div>
+                            {% elif answer.question.content_type == "video" and answer.question.video %}
+                                <div class="mb-3 text-center">
+                                    <video controls style="max-height: 200px;">
+                                        <source src="{{ answer.question.video.url }}" type="video/mp4">
+                                    </video>
+                                </div>
+                            {% endif %}
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-2">
+                                        {% if answer.question.question_type == "multiple" %}
+                                            <strong>Các đáp án bạn chọn:</strong>
+                                            <div>
+                                                {% for option in answer.user_answer_list %}
+                                                    <span class="badge bg-secondary me-1">{{ option }}</span>
+                                                {% empty %}
+                                                    <span class="text-muted">Không chọn đáp án nào</span>
+                                                {% endfor %}
+                                            </div>
+                                        {% elif answer.question.question_type == "true_false" %}
+                                            <strong>Đáp án bạn chọn:</strong>
+                                            <div>
+                                                {% if answer.user_answer == "true" %}
+                                                    <span class="badge bg-secondary">Đúng</span>
+                                                {% elif answer.user_answer == "false" %}
+                                                    <span class="badge bg-secondary">Sai</span>
+                                                {% else %}
+                                                    <span class="text-muted">Không chọn đáp án</span>
+                                                {% endif %}
+                                            </div>
+                                        {% elif answer.question.question_type == "fill_blank" %}
+                                            <strong>Câu trả lời của bạn:</strong>
+                                            <div>
+                                                {% if answer.user_answer %}
+                                                    <span class="badge bg-secondary">{{ answer.user_answer }}</span>
+                                                {% else %}
+                                                    <span class="text-muted">Không có câu trả lời</span>
+                                                {% endif %}
+                                            </div>
+                                        {% else %}
+                                            <strong>Đáp án bạn chọn:</strong>
+                                            <div>
+                                                {% if answer.user_answer %}
+                                                    <span class="badge bg-secondary">{{ answer.user_answer }}</span>
+                                                {% else %}
+                                                    <span class="text-muted">Không chọn đáp án</span>
+                                                {% endif %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-2">
+                                        {% if answer.question.question_type == "multiple" %}
+                                            <strong>Đáp án đúng:</strong>
+                                            <div>
+                                                {% for option in answer.correct_answers_list %}
+                                                    <span class="badge bg-success me-1">{{ option }}</span>
+                                                {% endfor %}
+                                            </div>
+                                        {% elif answer.question.question_type == "true_false" %}
+                                            <strong>Đáp án đúng:</strong>
+                                            <div>
+                                                {% if answer.question.correct_answer == "true" %}
+                                                    <span class="badge bg-success">Đúng</span>
+                                                {% else %}
+                                                    <span class="badge bg-success">Sai</span>
+                                                {% endif %}
+                                            </div>
+                                        {% elif answer.question.question_type == "fill_blank" %}
+                                            <strong>Đáp án đúng:</strong>
+                                            <div>
+                                                <span class="badge bg-success">{{ answer.question.correct_answer }}</span>
+                                            </div>
+                                        {% else %}
+                                            <strong>Đáp án đúng:</strong>
+                                            <div>
+                                                <span class="badge bg-success">{{ answer.question.correct_answer }}</span>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    
+                    {% if result.score >= 70 %}
+                        <div class="alert alert-success mb-4">
+                            <p class="mb-0">Chúc mừng! Bạn đã đạt yêu cầu để nhận chứng chỉ.</p>
+                        </div>
+                        
+                        {% if certificate %}
+                            <div class="text-center mb-4">
+                                <a href="{% url 'view_certificate' certificate.id %}" class="btn btn-primary">
+                                    <i class="bi bi-award"></i> Xem Chứng Chỉ
+                                </a>
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="alert alert-warning mb-4">
+                            <p class="mb-0">Bạn cần đạt ít nhất 70% điểm số để nhận chứng chỉ.</p>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'exam_list' %}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Quay lại danh sách bài thi
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

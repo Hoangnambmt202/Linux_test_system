@@ -13,5 +13,5 @@ class Result(models.Model):
 class Answer(models.Model):
     result = models.ForeignKey(Result, on_delete=models.CASCADE, related_name="answers")
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    selected_option = models.CharField(max_length=1)  # A, B, C, hoặc D
+    selected_option = models.CharField(max_length=10, null=True, blank=True)
     is_correct = models.BooleanField()

@@ -10,11 +10,11 @@
             <i class="fas fa-home"></i>
             <span>Trang chủ</span>
         </a>
-        <a href="{% url 'manage_questions' %}" class="sidebar-link {% if request.path == '/admin/questions/manage' %}active{% endif %}">
+        <a href="{% url 'manage_questions' %}" class="sidebar-link {% if request.path == '/admin/questions/' %}active{% endif %}">
             <i class="fas fa-question-circle"></i>
             <span>Ngân hàng câu hỏi</span>
         </a>
-        <a href="{% url 'manage_exams' %}" class="sidebar-link {% if request.path == '/admin/exams/' %}active{% endif %}">
+        <a href="{% url 'manage_exams' %}" class="sidebar-link {% if request.path == '/admin/exams/list' %}active{% endif %}">
             <i class="fas fa-file-alt"></i>
             <span>Bài thi</span>
         </a>
@@ -22,7 +22,7 @@
             <i class="fas fa-users"></i>
             <span>Thí sinh</span>
         </a>
-        <a href="{% url 'manage_results' %}" class="sidebar-link {% if request.path == '/admin/results/manage' %}active{% endif %}">
+        <a href="{% url 'manage_results' %}" class="sidebar-link {% if request.path == '/admin/results/' %}active{% endif %}">
             <i class="fas fa-list"></i>
             <span>Kết quả</span>
         </a>

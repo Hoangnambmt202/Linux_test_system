@@ -36,7 +36,7 @@ def admin_dashboard(request):
     if not request.user.is_staff:  # Chỉ cho phép admin truy cập
         return redirect("admin_login")
     total_exams = Exam.objects.count()
-    total_users = User.objects.count()
+    total_users = User.objects.exclude(is_superuser=True).count()  # Loại bỏ admin
     total_certificates = Result.objects.count()
     context = {
         "total_exams": total_exams,
@@ -52,7 +52,7 @@ def manage_users(request):
     if query:
         users = User.objects.filter(username__icontains=query)
     else:
-        users = User.objects.all()
+        users = User.objects.exclude(is_superuser=True)  # Loại bỏ admin
     
     return render(request, 'manage_users.html', {'users': users, 'query': query})
 def delete_user(request, user_id):

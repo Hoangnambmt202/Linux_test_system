@@ -1,177 +1,240 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from questions.models import Question
+from django.contrib import messages
+from django.core.exceptions import ValidationError
+from django.db import transaction
 import os
-import json
+from .models import Question, Option
 
-
-@login_required
-def manage_questions(request):
-    query = request.GET.get('q', '')  
-    if query:
-        questions = Question.objects.filter(text__icontains=query)
-    else:
-        questions = Question.objects.all()
-
-    return render(request, "manage_questions.html", {"questions": questions, "query": query})
 
 @login_required
 def add_question(request):
-    if request.method == 'POST':
-        try:
-            # Get basic question data
-            text = request.POST.get('text')
-            content_type = request.POST.get('content_type')
-            question_type = request.POST.get('question_type')
-            difficulty = request.POST.get('difficulty')
+        if request.method == 'POST':
+            try:
+                with transaction.atomic():
+                    question = Question(
+                        text=request.POST.get('text'),
+                        content_type=request.POST.get('content_type'),
+                        question_type=request.POST.get('question_type'),
+                        difficulty=request.POST.get('difficulty'),
+                    )
 
-            # Create new question instance
-            question = Question(
-                text=text,
-                content_type=content_type,
-                question_type=question_type,
-                difficulty=difficulty
-            )
+                    # Xử lý media
+                    if question.content_type == 'image':
+                        question.image = request.FILES.get('image')
+                    elif question.content_type == 'video':
+                        question.video = request.FILES.get('video')
 
-            # Handle media files based on content type
-            if content_type == 'image' and request.FILES.get('image'):
-                question.image = request.FILES['image']
-            elif content_type == 'video' and request.FILES.get('video'):
-                question.video = request.FILES['video']
+                    question.save()
 
-            # Handle answers based on question type
-            if question_type in ['single', 'multiple']:
-                # Prepare options dictionary
-                options = {
-                    'A': request.POST.get('option_a'),
-                    'B': request.POST.get('option_b'),
-                    'C': request.POST.get('option_c'),
-                    'D': request.POST.get('option_d')
-                }
-                question.options = json.dumps(options)
-                
-                if question_type == 'single':
-                    question.correct_answer = request.POST.get('correct_answer')
-                else:
-                    correct_answers = request.POST.getlist('correct_answers')
-                    question.correct_answer = json.dumps(correct_answers)
+                    # Xử lý các loại câu hỏi
+                    if question.question_type in ['single', 'multiple']:
+                        options_data = {
+                            'A': request.POST.get('option_a'),
+                            'B': request.POST.get('option_b'),
+                            'C': request.POST.get('option_c'),
+                            'D': request.POST.get('option_d'),
+                        }
 
-            elif question_type == 'true_false':
-                # True/False question
-                question.options = None
-                question.correct_answer = request.POST.get('correct_answer')
+                        if not all(options_data.values()):
+                            raise ValidationError('Tất cả các đáp án A, B, C, D là bắt buộc.')
 
-            elif question_type == 'fill_blank':
-                # Fill in the blank question
-                question.options = None
-                question.correct_answer = request.POST.get('correct_answer')
+                        for key, text in options_data.items():
+                            Option.objects.create(question=question, key=key, text=text)
 
-            # Save the question
-            question.save()
-            messages.success(request, 'Câu hỏi đã được thêm thành công!')
-            return redirect('manage_questions')
+                        if question.question_type == 'single':
+                            correct_key = request.POST.get('correct_answer_single')
+                            if not correct_key or correct_key not in ['A', 'B', 'C', 'D']:
+                                raise ValidationError("Đáp án đúng không hợp lệ.")
+                            correct_option = Option.objects.get(question=question, key=correct_key)
+                            question.correct_answers.set([correct_option])
 
-        except Exception as e:
-            messages.error(request, f'Lỗi khi thêm câu hỏi: {str(e)}')
-            return redirect('add_question')
+                        else:  # multiple
+                            correct_keys = request.POST.getlist('correct_answers')
+                            if not correct_keys:
+                                raise ValidationError("Phải chọn ít nhất một đáp án đúng.")
+                            correct_options = Option.objects.filter(question=question, key__in=correct_keys)
+                            question.correct_answers.set(correct_options)
 
-    return render(request, 'add_question.html')
+                    elif question.question_type == 'true_false':
+                        correct_answer = request.POST.get('correct_answer_tf')
+                        if correct_answer not in ['true', 'false']:
+                            raise ValidationError('Câu hỏi đúng/sai phải chọn "Đúng" hoặc "Sai".')
+                        question.correct_answer_text = correct_answer
+                        question.save()
 
+                    elif question.question_type == 'fill_blank':
+                        correct_answer = request.POST.get('correct_answer_text')
+                        if not correct_answer:
+                            raise ValidationError('Phải nhập đáp án đúng cho câu hỏi điền khuyết.')
+                        question.correct_answer_text = correct_answer
+                        question.save()
+
+                    messages.success(request, 'Thêm câu hỏi thành công!')
+                    return redirect('manage_questions')
+
+            except ValidationError as ve:
+                messages.error(request, f'Lỗi: {ve}')
+            except Exception as e:
+                messages.error(request, f'Lỗi hệ thống: {e}')
+
+        return render(request, 'add_question.html')
 
 @login_required
 def edit_question(request, question_id):
-    question = get_object_or_404(Question, id=question_id)
-    
+    question = get_object_or_404(Question, id=question_id)  
     if request.method == 'POST':
         try:
-            # Update basic question data
-            question.text = request.POST.get('text')
-            question.content_type = request.POST.get('content_type')
-            question.question_type = request.POST.get('question_type')
-            question.difficulty = request.POST.get('difficulty')
+            with transaction.atomic():
+                # Update basic fields
+                question.text = request.POST.get('text')
+                question.content_type = request.POST.get('content_type')
+                question.question_type = request.POST.get('question_type')
+                question.difficulty = request.POST.get('difficulty')
 
-            # Handle media files
-            if question.content_type == 'image':
-                if request.FILES.get('image'):
-                    if question.image:
-                        if os.path.exists(question.image.path):
-                            os.remove(question.image.path)
-                    question.image = request.FILES['image']
-                    question.video = None
-            elif question.content_type == 'video':
-                if request.FILES.get('video'):
-                    if question.video:
-                        if os.path.exists(question.video.path):
-                            os.remove(question.video.path)
-                    question.video = request.FILES['video']
-                    question.image = None
-            else:
-                # Text only - clear both image and video
-                if question.image:
-                    if os.path.exists(question.image.path):
-                        os.remove(question.image.path)
-                    question.image = None
-                if question.video:
-                    if os.path.exists(question.video.path):
-                        os.remove(question.video.path)
-                    question.video = None
-
-            # Handle answers based on question type
-            if question.question_type in ['single', 'multiple']:
-                options = {
-                    'A': request.POST.get('option_a'),
-                    'B': request.POST.get('option_b'),
-                    'C': request.POST.get('option_c'),
-                    'D': request.POST.get('option_d')
-                }
-                question.options = json.dumps(options)
-                
-                if question.question_type == 'single':
-                    question.correct_answer = request.POST.get('correct_answer')
+                # Handle media content
+                if question.content_type == 'image':
+                    if request.FILES.get('image'):
+                        if question.image:
+                            question.image.delete()
+                        question.image = request.FILES['image']
+                        question.video = None
+                elif question.content_type == 'video':
+                    if request.FILES.get('video'):
+                        if question.video:
+                            question.video.delete()
+                        question.video = request.FILES['video']
+                        question.image = None
                 else:
-                    correct_answers = request.POST.getlist('correct_answers')
-                    question.correct_answer = json.dumps(correct_answers)
-            
-            elif question.question_type == 'true_false':
-                question.options = None
-                question.correct_answer = request.POST.get('correct_answer')
-            
-            elif question.question_type == 'fill_blank':
-                question.options = None
-                question.correct_answer = request.POST.get('correct_answer')
+                    question.image = None
+                    question.video = None
 
-            question.save()
-            messages.success(request, 'Câu hỏi đã được cập nhật thành công!')
-            return redirect('manage_questions')
+                question.save()
 
+                # Handle different question types
+                if question.question_type in ['single', 'multiple']:
+                    # Delete existing options
+                    question.options.all().delete()
+                    
+                    # Create new options
+                    options_data = {
+                        'A': request.POST.get('option_a'),
+                        'B': request.POST.get('option_b'),
+                        'C': request.POST.get('option_c'),
+                        'D': request.POST.get('option_d'),
+                    }
+
+                    if not all(options_data.values()):
+                        raise ValidationError('Tất cả các đáp án A, B, C, D là bắt buộc.')
+
+                    for key, text in options_data.items():
+                        Option.objects.create(question=question, key=key, text=text)
+
+                    # Handle correct answers
+                    if question.question_type == 'single':
+                        correct_key = request.POST.get('correct_answer_single')
+                        if not correct_key or correct_key not in ['A', 'B', 'C', 'D']:
+                            raise ValidationError("Đáp án đúng không hợp lệ.")
+                        correct_option = Option.objects.get(question=question, key=correct_key)
+                        question.correct_answers.set([correct_option])
+                    else:  # multiple
+                        correct_keys = request.POST.getlist('correct_answers')
+                        if not correct_keys:
+                            raise ValidationError("Phải chọn ít nhất một đáp án đúng.")
+                        correct_options = Option.objects.filter(question=question, key__in=correct_keys)
+                        question.correct_answers.set(correct_options)
+
+                elif question.question_type == 'true_false':
+                    correct_answer = request.POST.get('correct_answer_tf')
+                    if correct_answer not in ['true', 'false']:
+                        raise ValidationError('Câu hỏi đúng/sai phải chọn "Đúng" hoặc "Sai".')
+                    question.correct_answer_text = correct_answer
+                    question.save()
+
+                elif question.question_type == 'fill_blank':
+                    correct_answer = request.POST.get('correct_answer_text')
+                    if not correct_answer:
+                        raise ValidationError('Phải nhập đáp án đúng cho câu hỏi điền khuyết.')
+                    question.correct_answer_text = correct_answer
+                    question.save()
+
+                messages.success(request, 'Cập nhật câu hỏi thành công!')
+                return redirect('manage_questions')
+
+        except ValidationError as ve:
+            messages.error(request, f'Lỗi: {ve}')
         except Exception as e:
-            messages.error(request, f'Lỗi khi cập nhật câu hỏi: {str(e)}')
-            return redirect('edit_question', question_id=question_id)
-
-    # Prepare data for template
-    context = {
-        'question': question,
-    }
-    
-    # Add options to context if they exist
-    if question.options:
-        try:
-            context['options'] = json.loads(question.options)
-        except json.JSONDecodeError:
-            context['options'] = None
+            messages.error(request, f'Lỗi hệ thống: {e}')
             
-    # Add correct answers to context
-    if question.question_type == 'multiple':
-        try:
-            context['correct_answers'] = json.loads(question.correct_answer)
-        except json.JSONDecodeError:
-            context['correct_answers'] = []
-    else:
-        context['correct_answers'] = question.correct_answer
-        
-    return render(request, 'edit_question.html', context)
+    options = question.options.all().order_by('key')
+    return render(request, 'edit_question.html', {'question': question, 'options': options})
 
+
+        
+        
+@login_required
+def manage_questions(request):
+        query = request.GET.get('q', '')  
+        if query:
+            questions = Question.objects.filter(text__icontains=query)
+        else:
+            questions = Question.objects.all()
+
+        # Generate diagnostic report for questions
+        if request.GET.get('debug', '') == '1':
+            print("\n===== QUESTIONS DIAGNOSTIC REPORT =====")
+            print(f"Total questions: {questions.count()}")
+            
+            # Group questions by type
+            question_types = {}
+            for q_type, _ in Question.QUESTION_TYPES:
+                count = questions.filter(question_type=q_type).count()
+                question_types[q_type] = count
+            
+            print("\nQuestion counts by type:")
+            for q_type, count in question_types.items():
+                print(f"  {q_type}: {count}")
+            
+            # Check for potential data issues
+            print("\nPotential data issues:")
+            
+            # Single choice questions without exactly one correct answer
+            single_issues = Question.objects.filter(question_type='single').exclude(correct_answers=None)
+            for q in single_issues:
+                count = q.correct_answers.count()
+                if count != 1:
+                    print(f"  ID {q.id}: Single choice question with {count} correct answers")
+            
+            # Multiple choice questions without any correct answers
+            multiple_issues = Question.objects.filter(question_type='multiple').exclude(correct_answers=None)
+            for q in multiple_issues:
+                count = q.correct_answers.count()
+                if count == 0:
+                    print(f"  ID {q.id}: Multiple choice question with no correct answers")
+            
+            # True/False questions with invalid correct_answer_text
+            tf_issues = Question.objects.filter(question_type='true_false')
+            for q in tf_issues:
+                if q.correct_answer_text not in ['true', 'false']:
+                    print(f"  ID {q.id}: True/False question with invalid answer: '{q.correct_answer_text}'")
+            
+            # Fill in the blank questions without correct_answer_text
+            fb_issues = Question.objects.filter(question_type='fill_blank', correct_answer_text='')
+            for q in fb_issues:
+                print(f"  ID {q.id}: Fill in the blank question without an answer")
+            
+            # Questions with options not matching their type
+            for q in Question.objects.all():
+                if q.question_type in ['single', 'multiple']:
+                    if q.options.count() != 4:
+                        print(f"  ID {q.id}: {q.question_type} choice question with {q.options.count()} options (should be 4)")
+                elif q.question_type in ['true_false', 'fill_blank']:
+                    if q.options.exists():
+                        print(f"  ID {q.id}: {q.question_type} question with options (should have none)")
+            
+            print("=======================================\n")
+
+        return render(request, "manage_questions.html", {"questions": questions, "query": query})
 
 @login_required
 def delete_question(request, question_id):
@@ -193,3 +256,23 @@ def delete_question(request, question_id):
         messages.error(request, f'Lỗi khi xóa câu hỏi: {str(e)}')
     
     return redirect('manage_questions')
+
+@login_required
+def question_detail(request, question_id):
+    question = get_object_or_404(Question, id=question_id)
+
+    options = list(question.options.all().order_by('key'))
+    correct_answers = list(question.correct_answers.all())
+
+    print("\n--- DEBUG QUESTION ---")
+    print(f"ID: {question.id}, Type: {question.question_type}")
+    print(f"Correct Answer Text: {question.correct_answer_text}")
+    print(f"Options: {[f'{o.key}: {o.text}' for o in options]}")
+    print(f"Correct Answers: {[a.key for a in correct_answers]}")
+
+    context = {
+        'question': question,
+        'options': options,
+        'correct_answers': correct_answers,
+    }
+    return render(request, 'question_detail.html', context)

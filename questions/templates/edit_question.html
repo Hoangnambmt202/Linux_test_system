@@ -70,18 +70,16 @@
                             <small class="text-muted">Hỗ trợ: MP4, WebM</small>
                         </div>
 
-                        <!-- Các đáp án cho câu hỏi một đáp án và nhiều đáp án -->
-                        <div id="multiple_options" class="mb-4" style="display: none;">
+                        <div id="multiple_options" class="mb-4">
                             <div class="row g-3">
-                                {% for key, value in options.items %}
+                                {% for option in options %}
                                 <div class="col-md-6">
                                     <div class="card h-100">
                                         <div class="card-header">
-                                            <label for="option_{{ key|lower }}" class="form-label fw-bold mb-0">Đáp án {{ key }}</label>
+                                            <label for="option_{{ option.key|lower }}" class="form-label fw-bold mb-0">Đáp án {{ option.key }}</label>
                                         </div>
                                         <div class="card-body">
-                                            <input type="text" class="form-control" id="option_{{ key|lower }}" 
-                                                   name="option_{{ key|lower }}" value="{{ value }}">
+                                            <input type="text" class="form-control" id="option_{{ option.key|lower }}" name="option_{{ option.key|lower }}" value="{{ option.text }}">
                                         </div>
                                     </div>
                                 </div>
@@ -94,9 +92,9 @@
                             <label class="form-label fw-bold">Đáp án đúng:</label>
                             <div class="btn-group w-100" role="group">
                                 {% for key in "ABCD" %}
-                                <input type="radio" class="btn-check" name="correct_answer" 
+                                <input type="radio" class="btn-check" name="correct_answer_single" 
                                        id="correct_{{ key }}" value="{{ key }}"
-                                       {% if question.correct_answer == key %}checked{% endif %}>
+                                       {% if question.correct_answers.first and question.correct_answers.first.key == key %}checked{% endif %}>
                                 <label class="btn btn-outline-primary" for="correct_{{ key }}">{{ key }}</label>
                                 {% endfor %}
                             </div>
@@ -109,7 +107,7 @@
                                 {% for key in "ABCD" %}
                                 <input type="checkbox" class="btn-check" name="correct_answers" 
                                        id="correct_multi_{{ key }}" value="{{ key }}"
-                                       {% if key in correct_answers %}checked{% endif %}>
+                                       {% for correct_option in question.correct_answers.all %}{% if correct_option.key == key %}checked{% endif %}{% endfor %}>
                                 <label class="btn btn-outline-primary" for="correct_multi_{{ key }}">{{ key }}</label>
                                 {% endfor %}
                             </div>
@@ -119,12 +117,12 @@
                         <div id="true_false_answer" class="mb-4" style="display: none;">
                             <label class="form-label fw-bold">Đáp án đúng:</label>
                             <div class="btn-group w-100" role="group">
-                                <input type="radio" class="btn-check" name="correct_answer" id="btnTrue" 
-                                       value="true" {% if question.correct_answer == "true" %}checked{% endif %}>
+                                <input type="radio" class="btn-check" name="correct_answer_tf" id="btnTrue" 
+                                       value="true" {% if question.correct_answer_text == "true" %}checked{% endif %}>
                                 <label class="btn btn-outline-success" for="btnTrue">Đúng</label>
                                 
-                                <input type="radio" class="btn-check" name="correct_answer" id="btnFalse" 
-                                       value="false" {% if question.correct_answer == "false" %}checked{% endif %}>
+                                <input type="radio" class="btn-check" name="correct_answer_tf" id="btnFalse" 
+                                       value="false" {% if question.correct_answer_text == "false" %}checked{% endif %}>
                                 <label class="btn btn-outline-danger" for="btnFalse">Sai</label>
                             </div>
                         </div>
@@ -133,7 +131,7 @@
                         <div id="fill_blank_answer" class="mb-4" style="display: none;">
                             <label for="fillBlankAnswer" class="form-label fw-bold">Đáp án đúng:</label>
                             <input type="text" class="form-control" id="fillBlankAnswer" 
-                                   name="correct_answer" value="{{ question.correct_answer }}"
+                                   name="correct_answer_text" value="{{ question.correct_answer_text }}"
                                    placeholder="Nhập đáp án chính xác">
                         </div>
 
@@ -163,6 +161,49 @@
 </div>
 
 <script>
+function validateForm() {
+    const type = document.getElementById("question_type").value;
+    const text = document.getElementById("questionText").value.trim();
+
+    if (!text) {
+        alert("Vui lòng nhập nội dung câu hỏi!");
+        return false;
+    }
+
+    if (type === "single") {
+        const checked = document.querySelector('input[name="correct_answer_single"]:checked');
+        if (!checked) {
+            alert("Vui lòng chọn một đáp án đúng!");
+            return false;
+        }
+    }
+
+    if (type === "multiple") {
+        const checked = document.querySelectorAll('input[name="correct_answers"]:checked');
+        if (checked.length === 0) {
+            alert("Vui lòng chọn ít nhất một đáp án đúng!");
+            return false;
+        }
+    }
+
+    if (type === "true_false") {
+        const checked = document.querySelector('input[name="correct_answer_tf"]:checked');
+        if (!checked) {
+            alert("Vui lòng chọn đúng hoặc sai!");
+            return false;
+        }
+    }
+
+    if (type === "fill_blank") {
+        const value = document.querySelector('input[name="correct_answer_text"]').value.trim();
+        if (!value) {
+            alert("Vui lòng nhập đáp án đúng!");
+            return false;
+        }
+    }
+
+    return true;
+}
 function toggleContentType() {
     const type = document.getElementById("content_type").value;
     const imageUpload = document.getElementById("image_upload");
@@ -180,33 +221,13 @@ function toggleQuestionType() {
     const trueFalseAnswer = document.getElementById("true_false_answer");
     const fillBlankAnswer = document.getElementById("fill_blank_answer");
     
-    // Ẩn tất cả
-    multipleOptions.style.display = "none";
-    singleAnswer.style.display = "none";
-    multipleAnswer.style.display = "none";
-    trueFalseAnswer.style.display = "none";
-    fillBlankAnswer.style.display = "none";
-    
-    // Hiển thị theo loại câu hỏi
-    switch(type) {
-        case "single":
-            multipleOptions.style.display = "block";
-            singleAnswer.style.display = "block";
-            break;
-        case "multiple":
-            multipleOptions.style.display = "block";
-            multipleAnswer.style.display = "block";
-            break;
-        case "true_false":
-            trueFalseAnswer.style.display = "block";
-            break;
-        case "fill_blank":
-            fillBlankAnswer.style.display = "block";
-            break;
-    }
+    multipleOptions.style.display = type === "single" || type === "multiple" ? "block" : "none";
+    singleAnswer.style.display = type === "single" ? "block" : "none";
+    multipleAnswer.style.display = type === "multiple" ? "block" : "none";
+    trueFalseAnswer.style.display = type === "true_false" ? "block" : "none";
+    fillBlankAnswer.style.display = type === "fill_blank" ? "block" : "none";
 }
 
-// Khởi tạo khi tải trang
 document.addEventListener('DOMContentLoaded', function() {
     toggleContentType();
     toggleQuestionType();

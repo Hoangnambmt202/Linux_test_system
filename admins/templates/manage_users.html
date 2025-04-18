@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block extra_css %}
 {% load static %}
-
+{% load bootstrap_icons %}
 <link rel="stylesheet" href="{% static 'css/manage_users.css' %}">
 {% endblock %}
 {% block content %}
@@ -17,7 +17,7 @@
             <form method="GET" class="d-flex">
                 <input type="text" name="q" class="form-control me-2" placeholder="Tìm kiếm user..." value="{{ query }}">
                 <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-search"></i> Tìm kiếm
+                    {% bs_icon 'search' %} Tìm kiếm
                 </button>
             </form>
         </div>
@@ -49,11 +49,11 @@
                             <td class="text-center">
                                 <div class="btn-group" role="group">
                                     <a href="{% url 'edit_user' user.id %}" class="btn btn-sm btn-outline-primary">
-                                        <i class="bi bi-pencil"></i> Sửa
+                                        {% bs_icon 'pencil' %} Sửa
                                     </a>
                                     <a href="{% url 'delete_user' user.id %}" class="btn btn-sm btn-outline-danger" 
                                        onclick="return confirm('Bạn có chắc chắn muốn xóa người dùng này?')">
-                                        <i class="bi bi-trash"></i> Xóa
+                                       {% bs_icon 'trash' %} Xóa
                                     </a>
                                 </div>
                             </td>

@@ -22,6 +22,36 @@
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
+    .form-check {
+        margin-bottom: 1rem;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        transition: all 0.3s ease;
+    }
+    .form-check:hover {
+        background-color: rgba(0,0,0,0.05);
+    }
+    .form-check.active {
+        background-color: rgba(13,110,253,0.1);
+        border: 1px solid rgba(13,110,253,0.3);
+    }
+    .question-box {
+        padding: 2rem;
+    }
+    .timer {
+        font-size: 1.25rem;
+        font-weight: bold;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        background-color: #f8f9fa;
+    }
+    .timer.bg-danger {
+        color: white;
+        animation: blink 1s infinite;
+    }
+    @keyframes blink {
+        50% { opacity: 0.5; }
+    }
 </style>
 {% endblock %} 
 
@@ -47,34 +77,61 @@
                 <div class="question-box {% if not forloop.last %}border-bottom{% endif %}">
                     <h3 class="fw-bold">Câu {{ forloop.counter }}: {{ question.text }}</h3>
                     
+                    {% if question.content_type == "image" and question.image %}
                     <div class="question-media">
-                        {% if question.question_type == "image" and question.image %}
-                            <img src="{{ question.image.url }}" alt="Hình câu hỏi" class="img-fluid">
-                        {% elif question.question_type == "video" and question.video %}
-                            <video controls class="w-100">
-                                <source src="{{ question.video.url }}" type="video/mp4">
-                                Trình duyệt của bạn không hỗ trợ video.
-                            </video>
-                        {% endif %}
+                        <img src="{{ question.image.url }}" alt="Hình câu hỏi" class="img-fluid">
                     </div>
+                    {% elif question.content_type == "video" and question.video %}
+                    <div class="question-media">
+                        <video controls class="w-100">
+                            <source src="{{ question.video.url }}" type="video/mp4">
+                            Trình duyệt của bạn không hỗ trợ video.
+                        </video>
+                    </div>
+                    {% endif %}
                     
-                    <div class="options">
-                        <label class="form-check">
-                            <input class="form-check-input" type="radio" name="question_{{ question.id }}" value="A" required>
-                            <span class="form-check-label">A. {{ question.option_a }}</span>
-                        </label>
-                        <label class="form-check">
-                            <input class="form-check-input" type="radio" name="question_{{ question.id }}" value="B">
-                            <span class="form-check-label">B. {{ question.option_b }}</span>
-                        </label>
-                        <label class="form-check">
-                            <input class="form-check-input" type="radio" name="question_{{ question.id }}" value="C">
-                            <span class="form-check-label">C. {{ question.option_c }}</span>
-                        </label>
-                        <label class="form-check">
-                            <input class="form-check-input" type="radio" name="question_{{ question.id }}" value="D">
-                            <span class="form-check-label">D. {{ question.option_d }}</span>
-                        </label>
+                    <div class="options mt-4">
+                        {% if question.question_type == "single" %}
+                            {% for key, value in question.option_dict.items %}
+                            <label class="form-check">
+                                <input class="form-check-input" type="radio" 
+                                       name="question_{{ question.id }}" 
+                                       value="{{ key }}" required>
+                                <span class="form-check-label">{{ key }}. {{ value }}</span>
+                            </label>
+                            {% endfor %}
+                        
+                        {% elif question.question_type == "multiple" %}
+                            {% for key, value in question.option_dict.items %}
+                            <label class="form-check">
+                                <input class="form-check-input" type="checkbox" 
+                                       name="question_{{ question.id }}" 
+                                       value="{{ key }}">
+                                <span class="form-check-label">{{ key }}. {{ value }}</span>
+                            </label>
+                            {% endfor %}
+                        
+                        {% elif question.question_type == "true_false" %}
+                            <label class="form-check">
+                                <input class="form-check-input" type="radio" 
+                                       name="question_{{ question.id }}" 
+                                       value="true" required>
+                                <span class="form-check-label">Đúng</span>
+                            </label>
+                            <label class="form-check">
+                                <input class="form-check-input" type="radio" 
+                                       name="question_{{ question.id }}" 
+                                       value="false">
+                                <span class="form-check-label">Sai</span>
+                            </label>
+                        
+                        {% elif question.question_type == "fill_blank" %}
+                            <div class="form-group">
+                                <input type="text" class="form-control" 
+                                       name="question_{{ question.id }}" 
+                                       placeholder="Nhập câu trả lời của bạn" required>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
                 {% endfor %}
@@ -127,10 +184,16 @@
     document.querySelectorAll('.form-check').forEach(label => {
         label.addEventListener('click', function() {
             const questionBox = this.closest('.question-box');
-            questionBox.querySelectorAll('.form-check').forEach(l => {
-                l.classList.remove('active');
-            });
-            this.classList.add('active');
+            if (this.querySelector('input[type="radio"]')) {
+                // Với câu hỏi radio, chỉ cho phép chọn một đáp án
+                questionBox.querySelectorAll('.form-check').forEach(l => {
+                    l.classList.remove('active');
+                });
+                this.classList.add('active');
+            } else if (this.querySelector('input[type="checkbox"]')) {
+                // Với câu hỏi checkbox, cho phép chọn nhiều đáp án
+                this.classList.toggle('active');
+            }
         });
     });
 </script>

@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-
+{% load bootstrap_icons %}
 {% block content %}
 <div class="container-fluid py-5 px-4">
     <!-- Header section with gradient background -->
@@ -16,7 +16,7 @@
                             </div>
                             <div class="col-md-6 text-md-end mt-3 mt-md-0">
                                 <a href="{% url 'add_exam' %}" class="btn btn-light btn-lg">
-                                    <i class="bi bi-plus-lg me-2"></i>Thêm Bài Thi
+                                    {% bs_icon 'plus' %}hêm Bài Thi
                                 </a>
                             </div>
                         </div>
@@ -34,7 +34,7 @@
                 <div class="card-body p-4">
                     <div class="d-flex align-items-center">
                         <div class="rounded-circle bg-primary bg-opacity-10 p-3 me-3">
-                            <i class="bi bi-file-earmark-text text-primary" style="font-size: 1.5rem;"></i>
+                            {% bs_icon 'file-earmark-text' %}
                         </div>
                         <div>
                             <h2 class="display-5 fw-bold mb-0 text-primary">{{ exams|length }}</h2>
@@ -49,7 +49,7 @@
                 <div class="card-body p-4">
                     <div class="d-flex align-items-center">
                         <div class="rounded-circle bg-success bg-opacity-10 p-3 me-3">
-                            <i class="bi bi-question-circle text-success" style="font-size: 1.5rem;"></i>
+                            {% bs_icon 'question-circle' %}
                         </div>
                         <div>
                             <h2 class="display-5 fw-bold mb-0 text-success">{{ total_questions }}</h2>
@@ -64,7 +64,7 @@
                 <div class="card-body p-4">
                     <div class="d-flex align-items-center">
                         <div class="rounded-circle bg-warning bg-opacity-10 p-3 me-3">
-                            <i class="bi bi-clock-history text-warning" style="font-size: 1.5rem;"></i>
+                            {% bs_icon 'clock-history' %}
                         </div>
                         <div>
                             <h2 class="display-5 fw-bold mb-0 text-warning">{{ average_duration }}</h2>
@@ -82,12 +82,12 @@
         <div class="card-header bg-white p-4 border-0">
             <div class="d-flex justify-content-between align-items-center">
                 <h5 class="mb-0 fw-bold">
-                    <i class="bi bi-list-check me-2"></i>Danh Sách Bài Thi
+                    {% bs_icon 'list-check' %}Danh Sách Bài Thi
                 </h5>
                 <div class="input-group" style="max-width: 300px;">
                     <input type="text" class="form-control" placeholder="Tìm kiếm bài thi..." id="searchExam">
-                    <button class="btn btn-outline-secondary" type="button">
-                        <i class="bi bi-search"></i>
+                    <button class="btn btn-outline-secondary"  type="button">
+                        {% bs_icon 'search' %}
                     </button>
                 </div>
             </div>
@@ -113,7 +113,7 @@
                                 <td class="py-3">
                                     <div class="d-flex align-items-center">
                                         <div class="bg-primary bg-opacity-10 p-2 rounded-circle me-3">
-                                            <i class="bi bi-file-earmark-text text-primary"></i>
+                                            {% bs_icon 'file-earmark-text' %}
                                         </div>
                                         <div>
                                             <h6 class="mb-0">{{ exam.title }}</h6>
@@ -125,40 +125,40 @@
                                 </td>
                                 <td class="text-center py-3">
                                     <span class="badge rounded-pill bg-info bg-opacity-10 text-info px-3 py-2">
-                                        <i class="bi bi-clock me-1"></i>{{ exam.duration }} phút
+                                        {% bs_icon 'clock' %}{{ exam.duration }} phút
                                     </span>
                                 </td>
                                 <td class="text-center py-3">
                                     <span class="badge rounded-pill bg-secondary bg-opacity-10 text-secondary px-3 py-2">
-                                        <i class="bi bi-question-circle me-1"></i>{{ exam.questions.count }}
+                                        {% bs_icon 'question-circle' %}{{ exam.questions.count }}
                                     </span>
                                 </td>
                                 <td class="text-center py-3">
                                     <span class="badge rounded-pill bg-warning bg-opacity-10 text-warning px-3 py-2">
-                                        <i class="bi bi-calendar me-1"></i>{{ exam.date|date:"d/m/Y" }}
+                                        {% bs_icon 'calendar' %}{{ exam.date|date:"d/m/Y" }}
                                     </span>
                                 </td>
                                 <td class="text-center py-3">
                                     <div class="dropdown">
                                         <button class="btn btn-sm btn-light dropdown-toggle" type="button" id="dropdownMenuButton{{ exam.id }}" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="bi bi-three-dots"></i>
+                                            {% bs_icon 'three-dots' %}
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="dropdownMenuButton{{ exam.id }}">
                                             <li>
                                                 <a class="dropdown-item" href="{% url 'edit_exam' exam.id %}">
-                                                    <i class="bi bi-pencil me-2 text-warning"></i>Sửa
+                                                    {% bs_icon 'pencil' %}Sửa
                                                 </a>
                                             </li>
                                             <li>
                                                 <a class="dropdown-item" href="">
-                                                    <i class="bi bi-eye me-2 text-primary"></i>Xem
+                                                    {% bs_icon 'eye' %}Xem
                                                 </a>
                                             </li>
                                             <li><hr class="dropdown-divider"></li>
                                             <li>
                                                 <a class="dropdown-item text-danger" href="{% url 'delete_exam' exam.id %}" 
                                                    onclick="return confirm('Bạn có chắc muốn xóa bài thi này?')">
-                                                    <i class="bi bi-trash me-2"></i>Xóa
+                                                   {% bs_icon 'trash' %}Xóa
                                                 </a>
                                             </li>
                                         </ul>
@@ -177,7 +177,7 @@
                     <h3 class="text-muted mb-3">Chưa có bài thi nào</h3>
                     <p class="text-muted mb-4 w-75 mx-auto">Bạn chưa tạo bài thi nào. Hãy bắt đầu tạo bài thi đầu tiên để quản lý các kỳ thi của bạn.</p>
                     <a href="{% url 'add_exam' %}" class="btn btn-primary btn-lg px-4">
-                        <i class="bi bi-plus-circle me-2"></i>Tạo Bài Thi Đầu Tiên
+                        {% bs_icon 'plus' %}Tạo Bài Thi Đầu Tiên
                     </a>
                 </div>
             {% endif %}
@@ -196,7 +196,7 @@
                     <li class="page-item"><a class="page-link" href="#">3</a></li>
                     <li class="page-item">
                         <a class="page-link" href="#">
-                            <i class="bi bi-chevron-right"></i>
+                            {% bs_icon 'right' %}
                         </a>
                     </li>
                 </ul>

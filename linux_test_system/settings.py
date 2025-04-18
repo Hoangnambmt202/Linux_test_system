@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'results',
     'certificates',
     'user_panel',
-  
+    'django_bootstrap_icons',
 ]
 
 MIDDLEWARE = [
