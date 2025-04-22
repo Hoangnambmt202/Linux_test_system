@@ -4,11 +4,13 @@ from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.db import transaction
 import os
-from .models import Question, Option
+from .models import Question, Option, Topic
+from .forms import TopicForm
 
 
 @login_required
 def add_question(request):
+        topics = Topic.objects.all()
         if request.method == 'POST':
             try:
                 with transaction.atomic():
@@ -18,7 +20,11 @@ def add_question(request):
                         question_type=request.POST.get('question_type'),
                         difficulty=request.POST.get('difficulty'),
                     )
-
+                    # ✅ Gán chủ đề nếu có
+                    topic_id = request.POST.get('topic_id')
+                    if topic_id:
+                        topic = Topic.objects.get(id=topic_id)
+                        question.topic = topic
                     # Xử lý media
                     if question.content_type == 'image':
                         question.image = request.FILES.get('image')
@@ -78,11 +84,12 @@ def add_question(request):
             except Exception as e:
                 messages.error(request, f'Lỗi hệ thống: {e}')
 
-        return render(request, 'add_question.html')
+        return render(request, 'add_question.html', {'topics': topics})
 
 @login_required
 def edit_question(request, question_id):
     question = get_object_or_404(Question, id=question_id)  
+    topics = Topic.objects.all()  
     if request.method == 'POST':
         try:
             with transaction.atomic():
@@ -110,7 +117,10 @@ def edit_question(request, question_id):
                     question.video = None
 
                 question.save()
-
+                # ✅ Gán chủ đề nếu có
+                topic_id = request.POST.get('topic_id')
+                if topic_id:
+                    question.topic = Topic.objects.get(id=topic_id)
                 # Handle different question types
                 if question.question_type in ['single', 'multiple']:
                     # Delete existing options
@@ -167,18 +177,20 @@ def edit_question(request, question_id):
             messages.error(request, f'Lỗi hệ thống: {e}')
             
     options = question.options.all().order_by('key')
-    return render(request, 'edit_question.html', {'question': question, 'options': options})
-
-
-        
-        
+    return render(request, 'edit_question.html', {'question': question, 'options': options,'topics': topics })
+      
 @login_required
 def manage_questions(request):
         query = request.GET.get('q', '')  
+        topic_id = request.GET.get('topic', '')
+        topics = Topic.objects.all()
+        questions = Question.objects.all()
         if query:
             questions = Question.objects.filter(text__icontains=query)
-        else:
-            questions = Question.objects.all()
+        if topic_id:
+            questions = questions.filter(topic__id=topic_id)
+        
+           
 
         # Generate diagnostic report for questions
         if request.GET.get('debug', '') == '1':
@@ -234,7 +246,8 @@ def manage_questions(request):
             
             print("=======================================\n")
 
-        return render(request, "manage_questions.html", {"questions": questions, "query": query})
+        return render(request, "manage_questions.html", {"questions": questions, "query": query,"topics": topics,
+        "selected_topic": int(topic_id) if topic_id else None,})
 
 @login_required
 def delete_question(request, question_id):
@@ -263,6 +276,7 @@ def question_detail(request, question_id):
 
     options = list(question.options.all().order_by('key'))
     correct_answers = list(question.correct_answers.all())
+    topic = question.topic.name if question.topic else "Chưa có chủ đề"
 
     print("\n--- DEBUG QUESTION ---")
     print(f"ID: {question.id}, Type: {question.question_type}")
@@ -274,5 +288,32 @@ def question_detail(request, question_id):
         'question': question,
         'options': options,
         'correct_answers': correct_answers,
+        'topic': topic,
     }
     return render(request, 'question_detail.html', context)
+
+def manage_topics(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        if name:
+            Topic.objects.create(name=name)
+            messages.success(request, 'Đã thêm chủ đề thành công.')
+            return redirect('manage_topics')
+
+    topics = Topic.objects.all()
+    return render(request, 'manage_topics.html', {'topics': topics})
+
+def edit_topic(request, topic_id):
+    topic = get_object_or_404(Topic, id=topic_id)
+    if request.method == 'POST':
+        topic.name = request.POST.get('name')
+        topic.save()
+        messages.success(request, 'Đã cập nhật chủ đề.')
+        return redirect('manage_topics')
+    return render(request, 'edit_topic.html', {'topic': topic})
+
+def delete_topic(request, topic_id):
+    topic = get_object_or_404(Topic, id=topic_id)
+    topic.delete()
+    messages.success(request, 'Đã xóa chủ đề.')
+    return redirect('manage_topics')

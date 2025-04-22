@@ -38,7 +38,15 @@
               <label for="questionText" class="form-label fw-bold">Nội dung câu hỏi:</label>
               <textarea class="form-control" id="questionText" name="text" rows="3"></textarea>
             </div>
-
+            <label class="form-label fw-bold mb-2" for="topic">Chủ đề:</label>
+            <div class="mb-3">
+              <select class="form-select" name="topic_id" required>
+                  <option value="">-- Chọn chủ đề --</option>
+                  {% for topic in topics %}
+                  <option value="{{ topic.id }}">{{ topic.name }}</option>
+                  {% endfor %}
+              </select>
+            </div>
             <!-- Upload hình ảnh -->
             <div id="image_upload" class="mb-3" style="display: none">
               <label for="imageFile" class="form-label fw-bold">Chọn hình ảnh:</label>

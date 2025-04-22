@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load bootstrap_icons %}
+
+{% block content %}
+<h2 class="text-xl font-bold mb-4">Quản lý Chủ đề</h2>
+
+<form method="POST" class="mb-4">
+    {% csrf_token %}
+    <input type="text" name="name" placeholder="Nhập tên chủ đề" required class="border p-2 mr-2">
+    <button type="submit" class="btn btn-primary">Thêm</button>
+</form>
+
+<table class=" table table-bordered">
+    <thead class="table-light">
+        <tr>
+            <th>ID</th>
+            <th>Tên chủ đề</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for topic in topics %}
+    <tr class="border-t">
+        <td>{{ topic.id }}</td>
+        <td>{{ topic.name }}</td>
+        <td>
+            <a href="{% url 'edit_topic' topic.id %}" class="btn btn-primary"> {% bs_icon 'pencil' %} Sửa</a> 
+            <a href="{% url 'delete_topic' topic.id %}" class="btn btn-danger"> {% bs_icon 'trash' %} Xóa</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

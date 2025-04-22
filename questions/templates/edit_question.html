@@ -35,7 +35,18 @@
                                 <option value="fill_blank" {% if question.question_type == "fill_blank" %}selected{% endif %}>Điền khuyết</option>
                             </select>
                         </div>
-
+                        <div class="mb-4">
+                            <label for="topic" class="form-label fw-bold">Chủ đề:</label>
+                            <select class="form-select" name="topic_id" required>
+                                <option value="">-- Chọn chủ đề --</option>
+                                {% for topic in topics %}
+                            <option value="{{ topic.id }}" {% if question.topic.id == topic.id %}selected{% endif %}>
+                                {{ topic.name }}
+                            </option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                        
                         <!-- Nội dung câu hỏi -->
                         <div id="text_question" class="mb-4">
                             <label for="text" class="form-label fw-bold">Nội dung câu hỏi:</label>

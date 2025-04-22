@@ -3,6 +3,13 @@ from django.core.validators import FileExtensionValidator
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 
+
+class Topic(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+
+    def __str__(self):
+        return self.name
+    
 class Question(models.Model):
     CONTENT_TYPES = [
         ('text', 'Text Only'),
@@ -27,7 +34,7 @@ class Question(models.Model):
     content_type = models.CharField(max_length=10, choices=CONTENT_TYPES, default='text')
     question_type = models.CharField(max_length=20, choices=QUESTION_TYPES)
     difficulty = models.CharField(max_length=10, choices=DIFFICULTY_LEVELS, default='medium')
-
+    topic = models.ForeignKey(Topic, on_delete=models.SET_NULL, null=True, blank=True, related_name="questions")
     image = models.ImageField(
         upload_to='question_images/',
         null=True,
@@ -103,4 +110,3 @@ class Option(models.Model):
     def __str__(self):
         return f"{self.key}: {self.text[:50]}..."
 
-    

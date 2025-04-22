@@ -2,7 +2,15 @@
 {% block title %}Thông tin cá nhân{% endblock  %}
 {% block page_title %}Thông tin cá nhân {% endblock %}
 {% block profile_content %}
+
   <div class="list-group list-group-flush">
+    {% if messages %}
+    {% for message in messages %}
+    <script>
+      alert("{{ message }}");
+    </script>
+    {% endfor %}
+    {% endif %}
     <div class="list-group-item">
       <div class="row">
         <div class="col-md-4 fw-bold">Tên người dùng:</div>

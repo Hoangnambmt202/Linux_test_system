@@ -54,3 +54,48 @@ h3 {
     font-size: 1.2rem;
     margin-bottom: 15px;
 }
+.question-media {
+    margin: 20px 0;
+    text-align: center;
+}
+.question-media img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.question-media video {
+    max-width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.form-check {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+}
+.form-check:hover {
+    background-color: rgba(0,0,0,0.05);
+}
+.form-check.active {
+    background-color: rgba(13,110,253,0.1);
+    border: 1px solid rgba(13,110,253,0.3);
+}
+.question-box {
+    padding: 2rem;
+}
+.timer {
+    font-size: 1.25rem;
+    font-weight: bold;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    background-color: #f8f9fa;
+}
+.timer.bg-danger {
+    color: white;
+    animation: blink 1s infinite;
+}
+@keyframes blink {
+    50% { opacity: 0.5; }
+}

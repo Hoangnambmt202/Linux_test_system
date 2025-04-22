@@ -10,11 +10,11 @@ def certificate_list(request):
     certificates = Certificate.objects.all()
     return render(request, 'certificate_list.html', {'certificates': certificates})
 
-def issue_certificate(user, result_id):
+def issue_certificate( user, result_id ):
     result = get_object_or_404(Result, id=result_id, user=user)
-    
+        
     # Chỉ tạo bản ghi Certificate (không liên quan đến file)
-    certificate, created = Certificate.objects.get_or_create(
+    certificate = Certificate.objects.get_or_create(
         user=user,
         result=result
     )

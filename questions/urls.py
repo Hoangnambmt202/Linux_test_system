@@ -9,6 +9,9 @@ urlpatterns = [
     path("detail/<int:question_id>/", views.question_detail, name="question_detail"),
     path("edit/<int:question_id>/", views.edit_question, name="edit_question"),
     path("delete/<int:question_id>/", views.delete_question, name="delete_question"),
+    path('topics/', views.manage_topics, name='manage_topics'),
+    path('topics/edit/<int:topic_id>/', views.edit_topic, name='edit_topic'),
+    path('topics/delete/<int:topic_id>/', views.delete_topic, name='delete_topic'),
 ]
 
 if settings.DEBUG:

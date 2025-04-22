@@ -64,6 +64,7 @@
                 <div>Cập nhật lúc: {{ question.updated_at|date:"d/m/Y H:i" }}</div>
               </div>
             </div>
+            <p><strong>Chủ đề:</strong> {{ topic }}</p>
 
             <div class="col-md-4">
               {% if question.content_type == "image" and question.image %}
