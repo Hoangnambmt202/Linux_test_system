@@ -14,11 +14,11 @@
             <i class="fas fa-question-circle"></i>
             <span>Ngân hàng câu hỏi</span>
         </a>
-        <a href="{% url 'manage_topics' %}" class="sidebar-link {% if request.path == '/admin/topics/' %}active{% endif %}">
+        <a href="{% url 'manage_topics' %}" class="sidebar-link {% if request.path == '/admin/questions/topics/' %}active{% endif %}">
             <i class="fas fa-tags"></i>
             <span>Chủ đề</span>
         </a>
-        <a href="{% url 'manage_exams' %}" class="sidebar-link {% if request.path == '/admin/exams/list' %}active{% endif %}">
+        <a href="{% url 'manage_exams' %}" class="sidebar-link {% if request.path == '/exam/list' %}active{% endif %}">
             <i class="fas fa-file-alt"></i>
             <span>Bài thi</span>
         </a>
@@ -38,7 +38,7 @@
             <i class="fas fa-headset"></i>
             <span>Yêu cầu hỗ trợ</span>
         </a>
-        <a href="{% url 'logout' %}" class="sidebar-link {% if request.path == '/admin/logout' %}active{% endif %}">
+        <a href="{% url 'admin_logout' %}" class="sidebar-link {% if request.path == '/admin/logout' %}active{% endif %}">
             <i class="fas fa-sign-out-alt"></i>
             <span>Đăng xuất</span>
         </a>

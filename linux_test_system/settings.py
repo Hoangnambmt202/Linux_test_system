@@ -28,6 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+
 LOGIN_URL = '/login/'
 
 LOGOUT_REDIRECT_URL = '/login/'  # Sau khi đăng xuất, chuyển hướng về trang chủ
