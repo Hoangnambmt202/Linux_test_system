@@ -46,6 +46,9 @@
         padding: 0.25rem 0.5rem;
         margin-right: 0.5rem;
     }
+    .flex-1 {
+        flex: 1;
+    }
 </style>
 
 <div class="container mt-4">
@@ -57,15 +60,15 @@
     
     <div class="row mb-4">
         <div class="col-md-8">
-            <form method="GET" class="d-flex">
-                <input type="text" name="q" class="form-control me-2" placeholder="Tìm kiếm câu hỏi..." value="{{ query }}">
-                <select name="topic" class="form-select me-2">
+            <form method="GET" class="d-flex align-items-center">
+                <input type="text" name="q" class="form-control me-2 flex-1" placeholder="Tìm kiếm câu hỏi..." value="{{ query }}">
+                <select name="topic" class="form-select me-2 flex-1">
                     <option value="">-- Chủ đề --</option>
                     {% for topic in topics %}
                         <option value="{{ topic.id }}" {% if selected_topic == topic.id %}selected{% endif %}>{{ topic.name }}</option>
                     {% endfor %}
                 </select>
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" class="btn btn-primary flex-1 ">
                     <i class="bi bi-search"></i> Tìm kiếm
                 </button>
             </form>

@@ -1,4 +1,7 @@
 from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from django.urls import reverse
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from exams.models import Exam
 from results.models import Result
@@ -30,6 +33,12 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
+            return HttpResponse(f"""
+                <script>
+                    alert("Đăng nhập thành công!");
+                    window.location.href = "{reverse('home')}";  // hoặc dùng URL name nếu cần
+                </script>
+            """)
             return redirect('home')  # Điều hướng về trang chủ user
     else:
         form = LoginForm()
