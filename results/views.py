@@ -84,7 +84,8 @@ def submit_exam(request, exam_id):
             if not user.first_name or not user.last_name:
                 messages.warning(request, "Tên không được để trống. Vui lòng cập nhật thông tin cá nhân.")
                 return redirect('profile')
-        issue_certificate(request.user, result.id)
+            
+            issue_certificate(request.user, result.id)
 
         return redirect("view_result_user", result_id=result.id )
 

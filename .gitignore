@@ -18,6 +18,7 @@ db.sqlite3
 .env
 *.env
 
+
 # IDEs and editors
 .vscode/
 .idea/

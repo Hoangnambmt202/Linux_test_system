@@ -85,13 +85,7 @@ h3 {
 .question-box {
     padding: 2rem;
 }
-.timer {
-    font-size: 1.25rem;
-    font-weight: bold;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    background-color: #f8f9fa;
-}
+
 .timer.bg-danger {
     color: white;
     animation: blink 1s infinite;
