@@ -1,0 +1,1 @@
+web: gunicorn linux_test_system.wsgi:application --bind 0.0.0.0:$PORT
