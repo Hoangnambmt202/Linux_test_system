@@ -104,17 +104,16 @@ WSGI_APPLICATION = 'linux_test_system.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'mysql.connector.django',
-        'NAME': os.environ.get('MYSQL_ADDON_DB'),
-        'USER': os.environ.get('MYSQL_ADDON_USER'),
-        'PASSWORD': os.environ.get('MYSQL_ADDON_PASSWORD'),
-        'HOST': os.environ.get('MYSQL_ADDON_HOST'),
-        'PORT': os.environ.get('MYSQL_ADDON_PORT', '3306'),
+        'NAME': os.environ.get('MYSQL_DATABASE'), # Sửa từ MYSQL_ADDON_DB
+        'USER': os.environ.get('MYSQL_USER'),     # Sửa từ MYSQL_ADDON_USER
+        'PASSWORD': os.environ.get('MYSQL_PASSWORD'), # Sửa từ MYSQL_ADDON_PASSWORD
+        'HOST': os.environ.get('MYSQL_HOST'),     # Sửa từ MYSQL_ADDON_HOST
+        'PORT': os.environ.get('MYSQL_PORT', '3306'), # Sửa từ MYSQL_ADDON_PORT
         'OPTIONS': {
             'autocommit': True,
         }
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
