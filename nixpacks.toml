@@ -4,7 +4,7 @@
   aptPkgs = ['pkg-config', 'libmysqlclient-dev', 'default-libmysqlclient-dev', 'build-essential']
 
   # Chỉ định phiên bản Python (nếu cần, ví dụ Python 3.10)
-  pythonVersion = '3.11'  # Thay đổi nếu bạn muốn dùng phiên bản khác
+  pythonVersion = '3.12'  # Thay đổi nếu bạn muốn dùng phiên bản khác
 
 [phases.build]
   # Lệnh để cài đặt các thư viện Python từ requirements.txt
