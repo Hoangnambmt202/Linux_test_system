@@ -100,18 +100,12 @@ WSGI_APPLICATION = 'linux_test_system.wsgi.application'
 #         'PORT': '3306',
 #     }
 # }
+# Database Configuration
 DATABASES = {
-    'default': {
-        'ENGINE': 'mysql.connector.django',
-        'NAME': os.environ.get('MYSQL_ADDON_DB'),
-        'USER': os.environ.get('MYSQL_ADDON_USER'),
-        'PASSWORD': os.environ.get('MYSQL_ADDON_PASSWORD'),
-        'HOST': os.environ.get('MYSQL_ADDON_HOST'),
-        'PORT': os.environ.get('MYSQL_ADDON_PORT', '3306'),
-        'OPTIONS': {
-            'autocommit': True,
-        }
-    }
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL'), # Railway will provide this
+        conn_max_age=600
+    )
 }
 
 
