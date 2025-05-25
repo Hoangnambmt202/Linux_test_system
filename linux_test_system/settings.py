@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-+v@0g@=l-tyg)=43-elo#t8coy96-rob8#-v1%pjo(7^@a1qjg'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*',"web-production-68b65.up.railway.app",]
 
@@ -101,28 +101,28 @@ WSGI_APPLICATION = 'linux_test_system.wsgi.application'
 #     }
 # }
 # Database Configuration
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'mysql.connector.django',
-#         'NAME': os.environ.get('MYSQL_DATABASE'), 
-#         'USER': os.environ.get('MYSQL_USER'),     
-#         'PASSWORD': os.environ.get('MYSQL_PASSWORD'), 
-#         'HOST': os.environ.get('MYSQL_HOST'),     
-#         'PORT': os.environ.get('MYSQL_PORT', '3306'), 
-#         'OPTIONS': {
-#             'autocommit': True,
-#         }
-#     }
-# }
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL'), # Railway sẽ inject biến này
-        conn_max_age=600, # Giữ kết nối mở để cải thiện hiệu suất
-        conn_health_checks=True, # Tùy chọn: kiểm tra sức khỏe kết nối
-    )
+    'default': {
+        'ENGINE': 'mysql.connector.django',
+        'NAME': os.environ.get('MYSQL_DATABASE'), 
+        'USER': os.environ.get('MYSQL_USER'),     
+        'PASSWORD': os.environ.get('MYSQL_PASSWORD'), 
+        'HOST': os.environ.get('MYSQL_HOST'),     
+        'PORT': os.environ.get('MYSQL_PORT', '3306'), 
+        'OPTIONS': {
+            'autocommit': True,
+        }
+    }
 }
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         default=os.environ.get('DATABASE_URL'), # Railway sẽ inject biến này
+#         conn_max_age=600, # Giữ kết nối mở để cải thiện hiệu suất
+#         conn_health_checks=True, # Tùy chọn: kiểm tra sức khỏe kết nối
+#     )
+# }
 # Rất quan trọng: Thêm dòng này để đảm bảo Django biết đây là MySQL khi dùng dj_database_url
-DATABASES['default']['ENGINE'] = 'django.db.backends.mysql'
+# DATABASES['default']['ENGINE'] = 'django.db.backends.mysql'
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
