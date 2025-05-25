@@ -1,0 +1,251 @@
+[33mcommit 26cf20d007797acd79e03aec117322b97a684725[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Sun May 25 22:19:15 2025 +0700
+
+    update aptfile to use mariadb-client-dev and modify requirements.txt
+
+[33mcommit 42b01f1270aca79493bc51fe8f1bec9497149146[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Sun May 25 22:15:28 2025 +0700
+
+    update requirements.txt to reflect changes in dependencies
+
+[33mcommit e671b52f7fbbaf26b09c10ffbfdbd514b2f8106b[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Sun May 25 21:56:44 2025 +0700
+
+    refactor: consolidate build configuration into aptfile and remove nixpacks.toml
+
+[33mcommit fa09b32f7923b9f61e771705649b758431250445[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Sun May 25 21:50:47 2025 +0700
+
+    update nixpacks.toml to set Python version to 3.12
+
+[33mcommit c66280693a454a0f3e7fec72930a37fbe659efa1[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Sun May 25 21:45:44 2025 +0700
+
+    add nixpacks.toml for build configuration and environment setup
+
+[33mcommit 390345ed1e42e2b6223b844b6159d6f132fa0364[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Sun May 25 21:38:52 2025 +0700
+
+    update requirements.txt to reflect changes in dependencies
+
+[33mcommit ed65edff8aad361f27c083dd5d46cfcb00488f31[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Sun May 25 21:28:58 2025 +0700
+
+    update requirements.txt to reflect changes in dependencies
+
+[33mcommit 4b773c620b98bda4dcedd498f62bb6d2791ba671[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Sun May 25 21:28:05 2025 +0700
+
+    update aptfile to switch from mariadb-client-dev to libmysqlclient-dev and modify requirements.txt
+
+[33mcommit b99591541ffb6b3c12c263d89a1767e76aeb0dd1[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Sun May 25 21:03:55 2025 +0700
+
+    revert aptfile to use mariadb-client-dev
+
+[33mcommit 6ba037299e9b66113424b60c42b3338ace82ba90[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Sun May 25 20:56:53 2025 +0700
+
+    update requirements.txt to modify dependencies
+
+[33mcommit 72343aee1845558f0c4f09b5e9d34149268fd7c6[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Sun May 25 20:54:30 2025 +0700
+
+    update aptfile to replace libmysqlclient-dev with mariadb-client-lgpl-dev
+
+[33mcommit 05a484a3e3172fb5aefb66d639a64ccd53906e08[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Sun May 25 20:45:45 2025 +0700
+
+    refactor database settings to use dj-database-url and enhance CSS for question media and form checks
+
+[33mcommit 121f75385c808c8bbaea54054425e528330bf49a[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Sun May 25 18:01:05 2025 +0700
+
+    update DEBUG setting to True and add secure cookie settings for production
+
+[33mcommit d26fa1ddbf450a937f3d6ace2740d2e568efc379[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Sun May 25 17:55:52 2025 +0700
+
+    update ALLOWED_HOSTS and add CSRF_TRUSTED_ORIGINS for production environment
+
+[33mcommit 6644bf9015ce243a4629005fbf32cf44242d4f8d[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Sun May 25 17:42:07 2025 +0700
+
+    update gitignore, add folder font
+
+[33mcommit 43738e8ae5a9e0c135883664d5c95625401e9f64[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Sun May 25 17:30:56 2025 +0700
+
+    update requirements.txt to include mysql-connector-python
+
+[33mcommit 78f22719c934644c246055c375e0c86fc1a402e7[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Sun May 25 17:22:52 2025 +0700
+
+    update DATABASES settings to use mysql.connector.django and enable autocommit
+
+[33mcommit 8de264cbd6668af2c02d6d55409a99c6fb13e340[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Sun May 25 17:19:52 2025 +0700
+
+    update requirements.txt to reflect changes in dependencies
+
+[33mcommit 1e97de178848fde2d19c34c3e049659957c298aa[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Sun May 25 16:46:14 2025 +0700
+
+    update ALLOWED_HOSTS and configure DATABASES settings for MySQL
+
+[33mcommit 65c3c7ae27664867d720d067cb246a8532591556[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Sat May 24 21:25:10 2025 +0700
+
+    update requirements.txt to reflect changes in dependencies
+
+[33mcommit 51c25e5418b46651d7fa8d045070f1218a2ffd95[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Sat May 24 18:18:58 2025 +0700
+
+    update requirements.txt to reflect changes in dependencies
+
+[33mcommit 2ad2389e0c38817a4ceb57e62f555b92be3fa538[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Sat May 24 18:12:23 2025 +0700
+
+    remove mariadb-client-lgpl-dev from aptfile
+
+[33mcommit 1fbe7283bc9e6e4ea4ada5719f435c9ec2a45613[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Sat May 24 16:56:30 2025 +0700
+
+    update requirements.txt to include new dependencies
+
+[33mcommit b7b6c8c6cdda36dd28625652be7310b989cfca0b[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Sat May 24 16:52:24 2025 +0700
+
+    add libmysqlclient-dev to aptfile
+
+[33mcommit 4d8a12e157d4815e908b3a9ed3848b376b97a9e6[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Sat May 24 16:50:58 2025 +0700
+
+    update aptfile to use mariadb-client-lgpl-dev dependency
+
+[33mcommit 5fbe31bf2fe1bbf2374e3db893ddc3f57bb6c509[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Sat May 24 16:50:00 2025 +0700
+
+    update aptfile to use correct mysqlclient dependency
+
+[33mcommit edfc7bf628931ee6a05d5a105d212d27b34faaf5[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Sat May 24 16:47:58 2025 +0700
+
+    Add aptfile for mysqlclient dependencies
+
+[33mcommit 333c88983209142f5c2195a1c8d9545768d0f1dd[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Sat May 24 16:37:53 2025 +0700
+
+    add dj-database-url to requirements and update database settings for production
+
+[33mcommit 6df63721ee102f92ff7a86836cb0a96f5c923fb1[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Sat May 24 16:17:00 2025 +0700
+
+    configure allowed hosts for production and add Procfile for deployment
+
+[33mcommit 7eb0af3ed2ceb394a150937560b8bde8e152acd6[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Sat May 24 15:47:02 2025 +0700
+
+    set DEBUG to False in settings.py for production readiness
+
+[33mcommit e0732a77555c42c3631c7196899895021e02ed8c[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Fri May 23 10:14:30 2025 +0700
+
+    update .gitignore, modify timer styles, and adjust passing score message
+
+[33mcommit 11f2acc6f6a76a15ed0c5f81de1d168dcad08025[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Sat May 10 19:27:14 2025 +0700
+
+    fix feature
+
+[33mcommit 0e5d19977ea8492b07442d9b881b05d05fa7a7ed[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Wed Apr 23 11:58:57 2025 +0700
+
+    fix urls admin
+
+[33mcommit 78b282b97e354a86b82426317acb6cd1c9b5743c[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Wed Apr 23 00:40:34 2025 +0700
+
+    create topic and fix topic for exam, for questions, results
+
+[33mcommit 7816a8e8d74094bb2387199b9489e6e29e4f355b[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Fri Apr 18 23:41:52 2025 +0700
+
+    update database question, fix and update questions
+
+[33mcommit adf77b7b500a4907960419ee8c223383a7a1f03c[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Wed Apr 16 23:33:55 2025 +0700
+
+    fix video and image questions
+
+[33mcommit 6d460324631e0543ce25e97c74a22cf40d60f290[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Sat Mar 29 01:49:35 2025 +0700
+
+    fix and add font for certificate - done
+
+[33mcommit 68e56a1e569c8955f0f5a3950368cda085922e18[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Wed Mar 26 01:04:04 2025 +0700
+
+    update form , create support and notifications feature for admin and user
+
+[33mcommit a642f6672d771dfcb6d4d5e1528d66961b2a0ec5[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Mon Mar 24 23:50:36 2025 +0700
+
+    update profile, register, login, take exam, grade side user
+
+[33mcommit 55d843ed14a789a0cc67868e73f1359587beed3b[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Sun Mar 23 22:11:43 2025 +0700
+
+    fix update exam method
+
+[33mcommit bdc9325eb90e78d139a9e0f44acd23ce3eb6bf99[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Sun Mar 23 21:12:21 2025 +0700
+
+    update UI and logic question manage
+
+[33mcommit 0d51ee80e1f8fcdfb080c445184872c7f9895329[m
+Author: Hoang Nam <nam23062002@gmail.com>
+Date:   Fri Mar 21 11:43:36 2025 +0700
+
+    firt commit with admin feature
