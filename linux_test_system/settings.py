@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-+v@0g@=l-tyg)=43-elo#t8coy96-rob8#-v1%pjo(7^@a1qjg
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['.railway.app']
+ALLOWED_HOSTS = ['*','.railway.app']
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'default-insecure-key-for-development')
 LOGIN_URL = '/login/'
@@ -101,10 +101,14 @@ WSGI_APPLICATION = 'linux_test_system.wsgi.application'
 #     }
 # }
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL'), # Railway sẽ cung cấp biến này
-        conn_max_age=600 # Giữ kết nối alive trong 600 giây (10 phút)
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.environ.get('MYSQL_ADDON_DB'),
+        'USER': os.environ.get('MYSQL_ADDON_USER'),
+        'PASSWORD': os.environ.get('MYSQL_ADDON_PASSWORD'),
+        'HOST': os.environ.get('MYSQL_ADDON_HOST'),
+        'PORT': os.environ.get('MYSQL_ADDON_PORT', '3306'),
+    }
 }
 
 
