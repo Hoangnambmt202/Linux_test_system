@@ -102,12 +102,15 @@ WSGI_APPLICATION = 'linux_test_system.wsgi.application'
 # }
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'mysql.connector.django',
         'NAME': os.environ.get('MYSQL_ADDON_DB'),
         'USER': os.environ.get('MYSQL_ADDON_USER'),
         'PASSWORD': os.environ.get('MYSQL_ADDON_PASSWORD'),
         'HOST': os.environ.get('MYSQL_ADDON_HOST'),
         'PORT': os.environ.get('MYSQL_ADDON_PORT', '3306'),
+        'OPTIONS': {
+            'autocommit': True,
+        }
     }
 }
 
