@@ -15,26 +15,23 @@ from certificates.models import Result
 
 
 
-
+@csrf_protect
 def admin_login(request):
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
         user = authenticate(request, username=username, password=password)
         
-        if user is not None:
-            if user.is_staff:
-                login(request, user)
-                return redirect("admin_dashboard")
-            else:
-                messages.error(request, "Bạn không có quyền truy cập trang quản trị.")
+        if user is not None and user.is_staff:  # Chỉ cho phép admin đăng nhập
+            login(request, user)
+            return redirect(reverse("admin_dashboard"))  # Chuyển hướng sau khi đăng nhập thành công
         else:
             messages.error(request, "Tên đăng nhập hoặc mật khẩu không đúng.")
 
-    return render(request, "admin_login.html")
+    return render(request, "login.html")
 
 
-
+@login_required
 def admin_dashboard(request):
     if not request.user.is_staff:  # Chỉ cho phép admin truy cập
         return redirect("admin_login")
@@ -46,10 +43,10 @@ def admin_dashboard(request):
         "total_users": total_users,
         "total_certificates": total_certificates,   
         
+ 
     }
     return render(request, "dashboard.html", context)
 
-@login_required
 def manage_users(request):
     query = request.GET.get('q', '')  # Lấy từ khóa tìm kiếm
     if query:
@@ -65,7 +62,6 @@ def delete_user(request, user_id):
         messages.success(request, "Xóa người dùng thành công!")
     return redirect('manage_users')
 
-@login_required
 def edit_user(request, user_id):
     user = get_object_or_404(User, id=user_id)
     
@@ -124,4 +120,4 @@ def resolve_support_request(request, request_id):
 
 def logout_view(request):
     logout(request)
-    return redirect('admin_login')  # Điều hướng về trang đăng nhập sau khi đăng xuất
+    return redirect('login')  # Điều hướng về trang đăng nhập sau khi đăng xuất

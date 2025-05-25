@@ -26,9 +26,9 @@ SECRET_KEY = 'django-insecure-+v@0g@=l-tyg)=43-elo#t8coy96-rob8#-v1%pjo(7^@a1qjg
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*',"web-production-68b65.up.railway.app",]
+ALLOWED_HOSTS = []
 
-SECRET_KEY = os.environ.get('SECRET_KEY', 'default-insecure-key-for-development')
+
 LOGIN_URL = '/login/'
 
 LOGOUT_REDIRECT_URL = '/login/'  # Sau khi đăng xuất, chuyển hướng về trang chủ
